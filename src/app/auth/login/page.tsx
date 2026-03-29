@@ -45,8 +45,7 @@ export default function LoginPage() {
       .single();
 
     if ((profile as { role: string } | null)?.role === "admin") {
-      router.push("/dashboard");
-      router.refresh();
+      window.location.href = "/dashboard";
       return;
     }
 
@@ -57,11 +56,10 @@ export default function LoginPage() {
       .single();
 
     if (store?.is_approved) {
-      router.push("/dashboard");
+      window.location.href = "/dashboard";
     } else {
-      router.push("/pending");
+      window.location.href = "/pending";
     }
-    router.refresh();
   }
 
   return (
