@@ -40,7 +40,7 @@ const ALL_AREAS = [
   { pref: "沖縄", areas: ["松山", "栄町"] },
 ];
 
-const EMPTY_FORM = { title: "", body: "", category: "news" as const, thumbnail_url: null as string | null, area: null as string | null };
+const EMPTY_FORM = { title: "", body: "", category: "news" as "news" | "column" | "event", thumbnail_url: null as string | null, area: null as string | null };
 
 export default function AdminBlogPage() {
   const [posts, setPosts] = useState<SiteNews[]>([]);
@@ -65,7 +65,7 @@ export default function AdminBlogPage() {
     setAiGenerating(false);
     if (!result.ok) { setAiError(result.error); return; }
     setEditing(null);
-    setForm({ title: result.title, body: result.body, category: "column" as "news" | "column" | "event", thumbnail_url: result.thumbnail_url ?? null, area: aiArea || null });
+    setForm({ title: result.title, body: result.body, category: "column", thumbnail_url: result.thumbnail_url ?? null, area: aiArea || null });
     setUploadMsg("");
     setShowForm(true);
   }
