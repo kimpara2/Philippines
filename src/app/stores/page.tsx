@@ -49,8 +49,12 @@ export default async function StoresPage({ searchParams }: Props) {
     query = query.or(`name.ilike.%${q}%,description.ilike.%${q}%`);
   }
 
-  const { data: storesRaw } = await query.order("created_at", { ascending: false });
-  const stores = storesRaw as Store[] | null;
+  const { data: storesRaw } = await query;
+  // 管理者追加店舗（owner_id = null）を先頭に、それ以外はランダム順
+  const allStores = (storesRaw as Store[] | null) ?? [];
+  const adminStores = allStores.filter((s) => s.owner_id === null);
+  const otherStores = allStores.filter((s) => s.owner_id !== null).sort(() => Math.random() - 0.5);
+  const stores = [...adminStores, ...otherStores];
 
   // キャスト写真・店舗写真を取得
   const storeIds = (stores ?? []).map((s) => s.id);

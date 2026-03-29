@@ -87,9 +87,12 @@ export default async function AreaPage({ params }: Props) {
     .select("*")
     .in("area", searchAreas)
     .eq("is_published", true)
-    .eq("is_approved", true)
-    .order("created_at", { ascending: false });
-  const stores = storesRaw as Store[] | null;
+    .eq("is_approved", true);
+  // 管理者追加店舗（owner_id = null）を先頭に、それ以外はランダム順
+  const allAreaStores = (storesRaw as Store[] | null) ?? [];
+  const adminAreaStores = allAreaStores.filter((s) => s.owner_id === null);
+  const otherAreaStores = allAreaStores.filter((s) => s.owner_id !== null).sort(() => Math.random() - 0.5);
+  const stores = [...adminAreaStores, ...otherAreaStores];
 
   // キャスト写真・店舗写真を取得
   const storeIds = (stores ?? []).map((s) => s.id);
