@@ -88,6 +88,7 @@ export default function LoginPage() {
               <label className="text-gray-400 text-sm block mb-1.5">{t("email")}</label>
               <input
                 type="email"
+                name="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -101,6 +102,7 @@ export default function LoginPage() {
               <label className="text-gray-400 text-sm block mb-1.5">{t("password")}</label>
               <input
                 type="password"
+                name="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required

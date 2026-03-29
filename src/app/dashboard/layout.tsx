@@ -43,14 +43,44 @@ export default async function DashboardLayout({
   ];
 
   return (
-    <div className="flex min-h-[calc(100vh-64px)]">
+    <div className="flex flex-col md:flex-row min-h-[calc(100vh-64px)]">
       {/* サイドバー */}
-      <aside className="w-56 bg-dark-card border-r border-dark-border shrink-0">
-        <div className="p-4 border-b border-dark-border">
+      <aside className="w-full md:w-56 bg-dark-card border-b md:border-b-0 md:border-r border-dark-border md:shrink-0">
+        <div className="hidden md:block p-4 border-b border-dark-border">
           <div className="text-primary font-bold text-sm">⚙️ {t("title")}</div>
           <div className="text-gray-400 text-xs mt-0.5 truncate">{user.email}</div>
         </div>
-        <nav className="p-3 space-y-1">
+
+        {/* モバイル：横スクロールナビ */}
+        <nav className="md:hidden flex overflow-x-auto gap-1 p-2">
+          {navItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs text-gray-300 hover:bg-dark hover:text-primary transition-colors whitespace-nowrap bg-dark/50"
+            >
+              <span>{item.icon}</span>
+              <span>{item.label}</span>
+            </Link>
+          ))}
+          {isAdmin && (
+            <Link
+              href="/admin"
+              className="flex items-center gap-1.5 px-3 py-2 text-xs text-red-400 font-bold whitespace-nowrap bg-red-900/10 rounded-lg"
+            >
+              🔐 管理者
+            </Link>
+          )}
+          <Link
+            href="/"
+            className="flex items-center gap-1.5 px-3 py-2 text-xs text-gray-500 whitespace-nowrap bg-dark/50 rounded-lg"
+          >
+            ← サイトへ
+          </Link>
+        </nav>
+
+        {/* PC：縦ナビ */}
+        <nav className="hidden md:block p-3 space-y-1">
           {navItems.map((item) => (
             <Link
               key={item.href}
@@ -62,7 +92,7 @@ export default async function DashboardLayout({
             </Link>
           ))}
         </nav>
-        <div className="absolute bottom-4 left-0 w-56 px-3 space-y-1">
+        <div className="hidden md:block absolute bottom-4 left-0 w-56 px-3 space-y-1">
           {isAdmin && (
             <Link
               href="/admin"
@@ -81,7 +111,7 @@ export default async function DashboardLayout({
       </aside>
 
       {/* メインコンテンツ */}
-      <main className="flex-1 p-8 overflow-auto">{children}</main>
+      <main className="flex-1 p-4 md:p-8 overflow-auto min-w-0">{children}</main>
     </div>
   );
 }
