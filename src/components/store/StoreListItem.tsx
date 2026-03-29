@@ -1,13 +1,22 @@
 "use client";
 
-// 店舗リスト表示コンポーネント（横幅いっぱい・縦並び用）
+// 店舗リスト表示コンポーネント（縦並び・全幅画像スライドショー付き）
 
 import Link from "next/link";
 import Image from "next/image";
 import type { Store, CastPreview } from "@/types/database";
 import { useTranslations } from "next-intl";
+import { StoreCardSlideshow } from "./StoreCardSlideshow";
 
-export function StoreListItem({ store, casts }: { store: Store; casts?: CastPreview[] }) {
+export function StoreListItem({
+  store,
+  casts,
+  photos,
+}: {
+  store: Store;
+  casts?: CastPreview[];
+  photos?: string[];
+}) {
   const t = useTranslations("store");
 
   const priceText =
@@ -17,43 +26,46 @@ export function StoreListItem({ store, casts }: { store: Store; casts?: CastPrev
       ? `¥${store.min_price.toLocaleString()}〜`
       : null;
 
+  // カバー画像 + 追加写真をまとめて配列に
+  const allImages: string[] = [
+    ...(store.cover_image_url ? [store.cover_image_url] : []),
+    ...(photos ?? []),
+  ];
+
   return (
     <Link href={`/stores/${store.slug}`} className="block group">
-      <div className="flex h-36 md:h-44 bg-dark-card group-hover:bg-dark border-b border-dark-border group-hover:border-primary transition-colors overflow-hidden">
-        {/* 左：正方形画像 */}
-        <div className="relative w-36 h-36 md:w-44 md:h-44 shrink-0">
-          {store.cover_image_url ? (
-            <Image
-              src={store.cover_image_url}
-              alt={store.name}
-              fill
-              className="object-cover group-hover:scale-105 transition-transform duration-300"
-            />
-          ) : (
-            <div className="absolute inset-0 bg-dark-border flex items-center justify-center text-4xl">
-              🍹
-            </div>
-          )}
+      <div className="bg-dark-card group-hover:bg-dark border-b border-dark-border group-hover:border-primary transition-colors overflow-hidden">
+
+        {/* 上：全幅スライドショー */}
+        <div className="relative">
           {store.area && (
-            <div className="absolute top-2 left-2">
+            <div className="absolute top-2 left-2 z-10">
               <span className="bg-primary text-white text-xs px-2 py-0.5 rounded-full font-bold">
                 {store.area}
               </span>
             </div>
           )}
+          <StoreCardSlideshow images={allImages} storeName={store.name} />
         </div>
 
-        {/* 右：テキスト */}
-        <div className="flex-1 flex flex-col justify-center px-5 md:px-8 py-4 min-w-0">
-          <h3 className="text-white font-black text-base md:text-xl leading-tight group-hover:text-primary transition-colors mb-1.5">
-            {store.name}
-          </h3>
+        {/* 下：テキスト情報 */}
+        <div className="px-4 py-3">
+          <div className="flex items-start justify-between gap-2">
+            <h3 className="text-white font-black text-base md:text-lg leading-tight group-hover:text-primary transition-colors">
+              {store.name}
+            </h3>
+            <svg className="w-4 h-4 text-gray-600 group-hover:text-primary transition-colors shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+
           {store.description && (
-            <p className="text-gray-400 text-sm line-clamp-2 mb-3 hidden md:block">
+            <p className="text-gray-400 text-sm line-clamp-2 mt-1">
               {store.description}
             </p>
           )}
-          <div className="flex flex-wrap gap-x-4 gap-y-1">
+
+          <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2">
             {store.address && (
               <span className="text-gray-400 text-xs flex items-center gap-1">
                 <span>📍</span>
@@ -89,13 +101,6 @@ export function StoreListItem({ store, casts }: { store: Store; casts?: CastPrev
               <span className="text-gray-500 text-xs">{casts.length}{t("castCount")}</span>
             </div>
           )}
-        </div>
-
-        {/* 右端：矢印 */}
-        <div className="flex items-center pr-5 md:pr-8 shrink-0 text-gray-600 group-hover:text-primary transition-colors">
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
         </div>
       </div>
     </Link>

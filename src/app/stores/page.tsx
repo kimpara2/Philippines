@@ -52,16 +52,26 @@ export default async function StoresPage({ searchParams }: Props) {
   const { data: storesRaw } = await query.order("created_at", { ascending: false });
   const stores = storesRaw as Store[] | null;
 
-  // キャスト写真を取得
+  // キャスト写真・店舗写真を取得
   const storeIds = (stores ?? []).map((s) => s.id);
-  const castsRaw = storeIds.length > 0
-    ? (await supabase.from("cast_members").select("id, store_id, name, profile_image_url").in("store_id", storeIds).eq("is_active", true).order("sort_order")).data
-    : null;
+  const [castsRaw, photosRaw] = storeIds.length > 0
+    ? await Promise.all([
+        supabase.from("cast_members").select("id, store_id, name, profile_image_url").in("store_id", storeIds).eq("is_active", true).order("sort_order").then(r => r.data),
+        supabase.from("store_photos").select("store_id, url").in("store_id", storeIds).order("sort_order").then(r => r.data),
+      ])
+    : [null, null];
+
   const castsByStore: Record<string, CastPreview[]> = {};
   (castsRaw ?? []).forEach((c) => {
     const cast = c as CastPreview;
     if (!castsByStore[cast.store_id]) castsByStore[cast.store_id] = [];
     castsByStore[cast.store_id].push(cast);
+  });
+
+  const photosByStore: Record<string, string[]> = {};
+  (photosRaw ?? []).forEach((p: { store_id: string; url: string }) => {
+    if (!photosByStore[p.store_id]) photosByStore[p.store_id] = [];
+    photosByStore[p.store_id].push(p.url);
   });
 
   return (
@@ -105,7 +115,7 @@ export default async function StoresPage({ searchParams }: Props) {
       {stores && stores.length > 0 ? (
         <div className="border-t border-dark-border">
           {stores.map((store) => (
-            <StoreListItem key={store.id} store={store} casts={castsByStore[store.id]} />
+            <StoreListItem key={store.id} store={store} casts={castsByStore[store.id]} photos={photosByStore[store.id]} />
           ))}
         </div>
       ) : (

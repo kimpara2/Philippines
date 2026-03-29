@@ -123,7 +123,7 @@ export default async function HomePage() {
             {t("heroSub")}
           </p>
 
-          <form action="/search" method="get" className="flex gap-2 max-w-md mx-auto">
+          <form action="/search" method="get" className="flex gap-2 max-w-md mx-auto px-4">
             <input
               type="text"
               name="q"

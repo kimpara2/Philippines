@@ -20,6 +20,9 @@ export const metadata: Metadata = {
   description:
     "全国のフィリピンパブ・スナック情報を網羅！東京・大阪・名古屋など全国の店舗一覧・キャスト紹介・口コミ・アクセスなど充実の情報をお届けします。",
   keywords: ["フィリピンパブ", "全国", "スナック", "キャスト", "フィリピン", "東京", "大阪", "名古屋"],
+  verification: {
+    google: "5sf8lHm6vRigWQL6t6HZDTpmxIuQnHacZ3aU9JuQp48",
+  },
   openGraph: {
     title: "フィリピンパブNavi | 全国のフィリピンパブ情報",
     description: "全国のフィリピンパブ・スナック情報を網羅！",
