@@ -82,16 +82,23 @@ export default async function AreaPage({ params }: Props) {
   const subAreas = PREFECTURE_AREAS[decodedArea];
   const searchAreas = subAreas ? [decodedArea, ...subAreas] : [decodedArea];
 
+  // 管理者ユーザーのIDを取得
+  const { data: adminProfilesArea } = await supabase
+    .from("profiles")
+    .select("id")
+    .eq("role", "admin");
+  const adminIdsArea = new Set((adminProfilesArea ?? []).map((p: { id: string }) => p.id));
+
   const { data: storesRaw } = await supabase
     .from("stores")
     .select("*")
     .in("area", searchAreas)
     .eq("is_published", true)
     .eq("is_approved", true);
-  // 管理者追加店舗（owner_id = null）を先頭に、それ以外はランダム順
+  // 管理者の店舗を先頭に、それ以外はランダム順
   const allAreaStores = (storesRaw as Store[] | null) ?? [];
-  const adminAreaStores = allAreaStores.filter((s) => s.owner_id === null);
-  const otherAreaStores = allAreaStores.filter((s) => s.owner_id !== null).sort(() => Math.random() - 0.5);
+  const adminAreaStores = allAreaStores.filter((s) => s.owner_id && adminIdsArea.has(s.owner_id));
+  const otherAreaStores = allAreaStores.filter((s) => !s.owner_id || !adminIdsArea.has(s.owner_id)).sort(() => Math.random() - 0.5);
   const stores = [...adminAreaStores, ...otherAreaStores];
 
   // キャスト写真・店舗写真を取得
