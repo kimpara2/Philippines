@@ -162,6 +162,8 @@ export default async function StoreDetailPage({ params }: Props) {
             fill
             className="object-cover"
             priority
+            unoptimized
+            sizes="(max-width: 768px) 100vw, 896px"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
