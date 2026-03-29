@@ -65,7 +65,7 @@ export default function AdminBlogPage() {
     setAiGenerating(false);
     if (!result.ok) { setAiError(result.error); return; }
     setEditing(null);
-    setForm({ title: result.title, body: result.body, category: "column", thumbnail_url: result.thumbnail_url ?? null, area: aiArea || null });
+    setForm({ title: result.title, body: result.body, category: "column" as "news" | "column" | "event", thumbnail_url: result.thumbnail_url ?? null, area: aiArea || null });
     setUploadMsg("");
     setShowForm(true);
   }
