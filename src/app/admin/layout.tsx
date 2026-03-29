@@ -27,6 +27,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     { href: "/admin/reviews", label: "口コミ管理", icon: "💬" },
     { href: "/admin/users", label: "ユーザー管理", icon: "👥" },
     { href: "/admin/blog", label: "サイトニュース管理", icon: "📝" },
+    { href: "/admin/rankings", label: "ランキング管理", icon: "🏆" },
   ];
 
   return (

@@ -171,10 +171,20 @@ export default async function AreaPage({ params }: Props) {
         <span className="text-white">{decodedArea}</span>
       </nav>
 
-      <h1 className="text-2xl font-black text-white mb-2">
-        📍 {decodedArea}のフィリピンパブ
-      </h1>
-      <p className="text-gray-400 text-sm mb-8">{stores?.length ?? 0}件掲載中</p>
+      <div className="flex items-start justify-between gap-4 mb-8">
+        <div>
+          <h1 className="text-2xl font-black text-white mb-2">
+            📍 {decodedArea}のフィリピンパブ
+          </h1>
+          <p className="text-gray-400 text-sm">{stores?.length ?? 0}件掲載中</p>
+        </div>
+        <Link
+          href={`/ranking/${encodeURIComponent(decodedArea)}`}
+          className="shrink-0 flex items-center gap-2 bg-yellow-500/10 hover:bg-yellow-500/20 border border-yellow-500/50 text-yellow-400 font-bold text-sm px-4 py-2.5 rounded-xl transition-colors"
+        >
+          🏆 ランキングを見る
+        </Link>
+      </div>
 
       {stores && stores.length > 0 ? (
         <div className="flex flex-col gap-4">
