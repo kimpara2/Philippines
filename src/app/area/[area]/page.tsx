@@ -167,7 +167,7 @@ export default async function AreaPage({ params }: Props) {
       <p className="text-gray-400 text-sm mb-8">{stores?.length ?? 0}件掲載中</p>
 
       {stores && stores.length > 0 ? (
-        <div className="border-t border-dark-border">
+        <div className="flex flex-col gap-4">
           {stores.map((store) => (
             <StoreListItem key={store.id} store={store} casts={castsByStore[store.id]} photos={photosByStore[store.id]} />
           ))}

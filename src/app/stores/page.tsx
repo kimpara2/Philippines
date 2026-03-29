@@ -113,7 +113,7 @@ export default async function StoresPage({ searchParams }: Props) {
 
       {/* 店舗リスト */}
       {stores && stores.length > 0 ? (
-        <div className="border-t border-dark-border">
+        <div className="flex flex-col gap-4">
           {stores.map((store) => (
             <StoreListItem key={store.id} store={store} casts={castsByStore[store.id]} photos={photosByStore[store.id]} />
           ))}

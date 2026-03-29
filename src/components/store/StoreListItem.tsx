@@ -34,7 +34,7 @@ export function StoreListItem({
 
   return (
     <Link href={`/stores/${store.slug}`} className="block group">
-      <div className="bg-dark-card group-hover:bg-dark border-b border-dark-border group-hover:border-primary transition-colors overflow-hidden">
+      <div className="bg-dark-card group-hover:bg-dark border border-dark-border group-hover:border-primary transition-colors overflow-hidden rounded-xl">
 
         {/* 上：全幅スライドショー */}
         <div className="relative">
