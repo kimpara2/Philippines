@@ -51,6 +51,7 @@ export default function DashboardStorePage() {
           description: store.description,
           area: store.area,
           address: store.address,
+          nearest_station: store.nearest_station,
           phone: store.phone,
           open_hours: store.open_hours,
           regular_holiday: store.regular_holiday,
@@ -204,6 +205,17 @@ export default function DashboardStorePage() {
               value={store.address ?? ""}
               onChange={(e) => setStore({ ...store, address: e.target.value })}
               placeholder="例：東京都新宿区歌舞伎町1-1-1"
+              className="w-full bg-dark border border-dark-border rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-primary"
+            />
+          </div>
+
+          <div>
+            <label className="text-gray-400 text-sm block mb-1.5">最寄り駅</label>
+            <input
+              type="text"
+              value={store.nearest_station ?? ""}
+              onChange={(e) => setStore({ ...store, nearest_station: e.target.value })}
+              placeholder="例：新宿駅 徒歩5分"
               className="w-full bg-dark border border-dark-border rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-primary"
             />
           </div>

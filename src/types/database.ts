@@ -22,6 +22,7 @@ export type Store = {
   description: string | null;
   area: string | null;
   address: string | null;
+  nearest_station: string | null;
   phone: string | null;
   open_hours: string | null;
   regular_holiday: string | null;

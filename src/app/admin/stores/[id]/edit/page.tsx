@@ -29,6 +29,7 @@ type StoreData = {
   name_kana: string | null;
   area: string;
   address: string | null;
+  nearest_station: string | null;
   phone: string | null;
   open_hours: string | null;
   regular_holiday: string | null;
@@ -191,6 +192,7 @@ export default function AdminStoreEditPage() {
     name_kana: "",
     area: "",
     address: "",
+    nearest_station: "",
     phone: "",
     open_hours: "",
     regular_holiday: "",
@@ -224,6 +226,7 @@ export default function AdminStoreEditPage() {
         name_kana: s.name_kana ?? "",
         area: s.area ?? "",
         address: s.address ?? "",
+        nearest_station: s.nearest_station ?? "",
         phone: s.phone ?? "",
         open_hours: s.open_hours ?? "",
         regular_holiday: s.regular_holiday ?? "",
@@ -258,6 +261,7 @@ export default function AdminStoreEditPage() {
       name_kana: form.name_kana.trim() || null,
       area: form.area,
       address: form.address.trim() || null,
+      nearest_station: form.nearest_station.trim() || null,
       phone: form.phone.trim() || null,
       open_hours: form.open_hours.trim() || null,
       regular_holiday: form.regular_holiday.trim() || null,
@@ -368,12 +372,20 @@ export default function AdminStoreEditPage() {
           </select>
         </div>
 
-        {/* 住所・電話 */}
+        {/* 住所・最寄り駅 */}
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className={labelCls}>住所</label>
             <input className={inputCls} value={form.address} onChange={(e) => set("address", e.target.value)} placeholder="東京都新宿区歌舞伎町1-2-3" />
           </div>
+          <div>
+            <label className={labelCls}>最寄り駅</label>
+            <input className={inputCls} value={form.nearest_station ?? ""} onChange={(e) => set("nearest_station", e.target.value)} placeholder="新宿駅 徒歩5分" />
+          </div>
+        </div>
+
+        {/* 電話 */}
+        <div className="grid grid-cols-2 gap-4">
           <div>
             <label className={labelCls}>電話番号</label>
             <input className={inputCls} value={form.phone} onChange={(e) => set("phone", e.target.value)} placeholder="03-1234-5678" />

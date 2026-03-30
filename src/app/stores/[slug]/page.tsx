@@ -293,6 +293,12 @@ export default async function StoreDetailPage({ params }: Props) {
                   <MapEmbed address={store.address} />
                 </div>
               )}
+              {store.nearest_station && (
+                <div>
+                  <div className="text-gray-500 text-xs mb-0.5">最寄り駅</div>
+                  <div className="text-white text-sm">🚉 {store.nearest_station}</div>
+                </div>
+              )}
               {store.phone && (
                 <div>
                   <div className="text-gray-500 text-xs mb-0.5">電話番号</div>
