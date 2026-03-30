@@ -16,7 +16,7 @@ export function LanguageSwitcher() {
 
   function switchLocale(code: string) {
     document.cookie = `locale=${code}; path=/; max-age=31536000; SameSite=Lax`;
-    window.location.reload();
+    window.location.href = window.location.pathname + window.location.search;
   }
 
   const current = LANGS.find((l) => l.code === currentLocale) ?? LANGS[0];
