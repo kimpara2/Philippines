@@ -52,7 +52,12 @@ export function StoreListItem({
         <div className="px-4 py-3">
           <div className="flex items-start justify-between gap-2">
             <h3 className="text-white font-black text-base md:text-lg leading-tight group-hover:text-primary transition-colors">
-              {store.name}
+              {store.name_kana ? (
+                <ruby>
+                  {store.name}
+                  <rt className="text-[10px] font-normal tracking-wide">{store.name_kana}</rt>
+                </ruby>
+              ) : store.name}
             </h3>
             <svg className="w-4 h-4 text-gray-600 group-hover:text-primary transition-colors shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
