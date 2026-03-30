@@ -39,6 +39,7 @@ type StoreData = {
   website_url: string | null;
   twitter_url: string | null;
   instagram_url: string | null;
+  tiktok_url: string | null;
   cover_image_url: string | null;
   logo_url: string | null;
   is_published: boolean;
@@ -202,6 +203,7 @@ export default function AdminStoreEditPage() {
     website_url: "",
     twitter_url: "",
     instagram_url: "",
+    tiktok_url: "",
     is_published: true,
   });
 
@@ -236,6 +238,7 @@ export default function AdminStoreEditPage() {
         website_url: s.website_url ?? "",
         twitter_url: s.twitter_url ?? "",
         instagram_url: s.instagram_url ?? "",
+        tiktok_url: s.tiktok_url ?? "",
         is_published: s.is_published ?? true,
       });
       setLoading(false);
@@ -271,6 +274,7 @@ export default function AdminStoreEditPage() {
       website_url: form.website_url.trim() || null,
       twitter_url: form.twitter_url.trim() || null,
       instagram_url: form.instagram_url.trim() || null,
+      tiktok_url: form.tiktok_url.trim() || null,
       is_published: form.is_published,
     }).eq("id", storeId);
 
@@ -435,6 +439,10 @@ export default function AdminStoreEditPage() {
           <div>
             <label className={labelCls}>📸 Instagram URL</label>
             <input className={inputCls} value={form.instagram_url} onChange={(e) => set("instagram_url", e.target.value)} placeholder="https://instagram.com/..." />
+          </div>
+          <div>
+            <label className={labelCls}>🎵 TikTok URL</label>
+            <input className={inputCls} value={form.tiktok_url ?? ""} onChange={(e) => set("tiktok_url", e.target.value)} placeholder="https://tiktok.com/@..." />
           </div>
         </div>
 

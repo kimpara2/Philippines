@@ -143,6 +143,7 @@ export default function AdminNewStorePage() {
     website_url: "",
     twitter_url: "",
     instagram_url: "",
+    tiktok_url: "",
     is_published: true,
   });
 
@@ -178,6 +179,7 @@ export default function AdminNewStorePage() {
       website_url: form.website_url.trim() || null,
       twitter_url: form.twitter_url.trim() || null,
       instagram_url: form.instagram_url.trim() || null,
+      tiktok_url: form.tiktok_url.trim() || null,
       is_approved: true,
       is_published: form.is_published,
       owner_id: null,
@@ -365,6 +367,10 @@ export default function AdminNewStorePage() {
           <div>
             <label className={labelCls}>📸 Instagram URL</label>
             <input className={inputCls} value={form.instagram_url} onChange={(e) => set("instagram_url", e.target.value)} placeholder="https://instagram.com/..." />
+          </div>
+          <div>
+            <label className={labelCls}>🎵 TikTok URL</label>
+            <input className={inputCls} value={form.tiktok_url} onChange={(e) => set("tiktok_url", e.target.value)} placeholder="https://tiktok.com/@..." />
           </div>
         </div>
 

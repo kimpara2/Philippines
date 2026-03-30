@@ -60,6 +60,7 @@ export default function DashboardStorePage() {
           website_url: store.website_url,
           twitter_url: store.twitter_url,
           instagram_url: store.instagram_url,
+          tiktok_url: store.tiktok_url,
         })
         .eq("id", store.id);
 
@@ -314,6 +315,16 @@ export default function DashboardStorePage() {
               value={store.instagram_url ?? ""}
               onChange={(e) => setStore({ ...store, instagram_url: e.target.value })}
               placeholder="https://instagram.com/..."
+              className="w-full bg-dark border border-dark-border rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-primary"
+            />
+          </div>
+          <div>
+            <label className="text-gray-400 text-sm block mb-1.5">🎵 TikTok URL</label>
+            <input
+              type="url"
+              value={store.tiktok_url ?? ""}
+              onChange={(e) => setStore({ ...store, tiktok_url: e.target.value })}
+              placeholder="https://tiktok.com/@..."
               className="w-full bg-dark border border-dark-border rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-primary"
             />
           </div>

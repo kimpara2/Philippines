@@ -328,7 +328,7 @@ export default async function StoreDetailPage({ params }: Props) {
             </div>
 
             {/* SNSリンク */}
-            {(store.twitter_url || store.instagram_url || store.website_url) && (
+            {(store.twitter_url || store.instagram_url || store.tiktok_url || store.website_url) && (
               <div className="mt-5 pt-5 border-t border-dark-border space-y-2">
                 {store.website_url && (
                   <a href={store.website_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm text-gray-300 hover:text-primary transition-colors">
@@ -343,6 +343,11 @@ export default async function StoreDetailPage({ params }: Props) {
                 {store.instagram_url && (
                   <a href={store.instagram_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm text-gray-300 hover:text-primary transition-colors">
                     📸 Instagram
+                  </a>
+                )}
+                {store.tiktok_url && (
+                  <a href={store.tiktok_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm text-gray-300 hover:text-primary transition-colors">
+                    🎵 TikTok
                   </a>
                 )}
               </div>
