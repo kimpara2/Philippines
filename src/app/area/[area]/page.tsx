@@ -24,22 +24,17 @@ type AreaNews = {
 
 // 県名 → 配下エリアのマッピング
 const PREFECTURE_AREAS: Record<string, string[]> = {
-  東京:  ["新宿", "池袋", "六本木", "錦糸町", "上野"],
-  大阪:  ["なんば", "心斎橋", "梅田", "北新地"],
-  神奈川: ["横浜", "川崎"],
-  愛知:  ["栄", "錦", "大須"],
+  愛知:  ["栄", "錦", "大須", "名古屋"],
   静岡:  ["浜松", "静岡市", "沼津"],
-  北海道: ["すすきの", "札幌"],
-  福岡:  ["中洲", "天神", "博多"],
-  兵庫:  ["神戸", "三宮"],
-  京都:  ["木屋町", "先斗町"],
-  広島:  ["流川", "紙屋町"],
-  宮城:  ["国分町", "仙台"],
-  沖縄:  ["松山", "栄町"],
+  岐阜:  ["岐阜市"],
+  三重:  ["四日市"],
 };
+
+const CATEGORIES = ["フィリピンパブ", "スナック", "ガールズバー", "バー", "キャバクラ"];
 
 type Props = {
   params: Promise<{ area: string }>;
+  searchParams: Promise<{ category?: string }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -73,8 +68,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function AreaPage({ params }: Props) {
+export default async function AreaPage({ params, searchParams }: Props) {
   const { area } = await params;
+  const { category } = await searchParams;
   const decodedArea = decodeURIComponent(area);
   const supabase = await createClient();
 
@@ -89,12 +85,14 @@ export default async function AreaPage({ params }: Props) {
     .eq("role", "admin");
   const adminIdsArea = new Set((adminProfilesArea ?? []).map((p: { id: string }) => p.id));
 
-  const { data: storesRaw } = await supabase
+  let storeQuery = supabase
     .from("stores")
     .select("*")
     .in("area", searchAreas)
     .eq("is_published", true)
     .eq("is_approved", true);
+  if (category) storeQuery = storeQuery.eq("category", category);
+  const { data: storesRaw } = await storeQuery;
   // 管理者の店舗を先頭に、それ以外はランダム順
   const allAreaStores = (storesRaw as Store[] | null) ?? [];
   const adminAreaStores = allAreaStores.filter((s) => s.owner_id && adminIdsArea.has(s.owner_id));
@@ -171,10 +169,10 @@ export default async function AreaPage({ params }: Props) {
         <span className="text-white">{decodedArea}</span>
       </nav>
 
-      <div className="flex items-start justify-between gap-4 mb-8">
+      <div className="flex items-start justify-between gap-4 mb-6">
         <div>
           <h1 className="text-2xl font-black text-white mb-2">
-            📍 {decodedArea}のフィリピンパブ
+            📍 {decodedArea}{category ? `の${category}` : "の夜遊びスポット"}
           </h1>
           <p className="text-gray-400 text-sm">{stores?.length ?? 0}件掲載中</p>
         </div>
@@ -184,6 +182,29 @@ export default async function AreaPage({ params }: Props) {
         >
           🏆 ランキングを見る
         </Link>
+      </div>
+
+      {/* カテゴリフィルター */}
+      <div className="flex flex-wrap gap-2 mb-8">
+        <Link
+          href={`/area/${area}`}
+          className={`px-4 py-2 rounded-full text-sm font-bold transition-colors ${
+            !category ? "bg-primary text-white" : "bg-dark-card border border-dark-border text-gray-300 hover:border-primary"
+          }`}
+        >
+          すべて
+        </Link>
+        {CATEGORIES.map((c) => (
+          <Link
+            key={c}
+            href={`/area/${area}?category=${encodeURIComponent(c)}`}
+            className={`px-4 py-2 rounded-full text-sm font-bold transition-colors ${
+              category === c ? "bg-primary text-white" : "bg-dark-card border border-dark-border text-gray-300 hover:border-primary"
+            }`}
+          >
+            {c}
+          </Link>
+        ))}
       </div>
 
       {stores && stores.length > 0 ? (

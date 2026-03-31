@@ -6,10 +6,15 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import type { Store, CastPreview } from "@/types/database";
 
-export const metadata: Metadata = {
-  title: "店舗一覧",
-  description: "東海エリアのフィリピンパブ・スナック・ガールズバー・バー・キャバクラ一覧",
-};
+export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
+  const { area, category } = await searchParams;
+  const prefix = [area, category].filter(Boolean).join(" ");
+  const title = prefix ? `${prefix}の店舗一覧` : "東海の夜遊び店舗一覧";
+  const description = category
+    ? `東海（愛知・静岡・岐阜・三重）の${category}一覧${area ? `（${area}）` : ""}。営業時間・料金・アクセス情報を掲載。`
+    : "東海エリアのフィリピンパブ・スナック・ガールズバー・バー・キャバクラ一覧。エリア・ジャンルで絞り込めます。";
+  return { title, description };
+}
 
 const AREAS = [
   "栄", "錦", "大須", "名古屋",

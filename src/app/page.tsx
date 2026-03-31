@@ -165,6 +165,32 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* ジャンルから探す */}
+      <section className="max-w-6xl mx-auto px-4 pb-12">
+        <h2 className="text-xl font-bold text-accent mb-6 flex items-center gap-2">
+          🍸 ジャンルから探す
+        </h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+          {[
+            { name: "フィリピンパブ", icon: "🍹", desc: "フィリピン人キャスト在籍" },
+            { name: "スナック",       icon: "🥃", desc: "ママと気軽に一杯" },
+            { name: "ガールズバー",   icon: "👧", desc: "カジュアルに楽しむ" },
+            { name: "バー",           icon: "🍸", desc: "大人の夜の定番" },
+            { name: "キャバクラ",     icon: "💎", desc: "ラグジュアリーな夜" },
+          ].map(({ name, icon, desc }) => (
+            <Link
+              key={name}
+              href={`/stores?category=${encodeURIComponent(name)}`}
+              className="bg-dark-card border border-dark-border rounded-xl p-4 hover:border-primary hover:shadow-lg hover:shadow-primary/10 transition-all group text-center"
+            >
+              <div className="text-3xl mb-2">{icon}</div>
+              <div className="text-white font-bold text-sm group-hover:text-primary transition-colors mb-1">{name}</div>
+              <div className="text-gray-500 text-xs">{desc}</div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
       {/* 新着店舗 */}
       <section className="max-w-6xl mx-auto px-4 pb-16">
         <div className="flex items-center justify-between mb-6">
