@@ -6,9 +6,9 @@ import Image from "next/image";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "フィリピンパブ 人気ランキング | フィリピンパブNavi",
+  title: "フィリピンパブ 人気ランキング | 夜トカイ",
   description:
-    "口コミ評価が高い人気のフィリピンパブ・スナックをランキング形式で紹介。エリア別の人気店を探すならフィリピンパブNavi。",
+    "口コミ評価が高い人気のフィリピンパブ・スナックをランキング形式で紹介。エリア別の人気店を探すなら夜トカイ。",
   keywords: ["フィリピンパブ", "ランキング", "人気", "おすすめ", "口コミ", "評価"],
 };
 

@@ -4,8 +4,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "プライバシーポリシー | フィリピンパブNavi",
-  description: "フィリピンパブNaviのプライバシーポリシー（個人情報の取り扱いについて）です。",
+  title: "プライバシーポリシー | 夜トカイ",
+  description: "夜トカイのプライバシーポリシー（個人情報の取り扱いについて）です。",
 };
 
 export default function PrivacyPage() {
@@ -26,7 +26,7 @@ export default function PrivacyPage() {
         <section>
           <h2 className="text-white font-bold text-base mb-3">1. 基本方針</h2>
           <p>
-            フィリピンパブNavi（以下「当サイト」）は、ユーザーの個人情報の保護を重要な責務と考え、
+            夜トカイ（以下「当サイト」）は、ユーザーの個人情報の保護を重要な責務と考え、
             個人情報の保護に関する法律（個人情報保護法）をはじめとする法令を遵守し、
             適切に取り扱います。
           </p>

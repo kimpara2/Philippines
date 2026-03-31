@@ -11,7 +11,7 @@ async function fetchAreaContext(area: string): Promise<string> {
   try {
     const res = await fetch(
       `https://ja.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(area)}`,
-      { headers: { "User-Agent": "フィリピンパブNavi/1.0" } }
+      { headers: { "User-Agent": "夜トカイ/1.0" } }
     );
     if (!res.ok) return "";
     const data = await res.json() as { extract?: string };
@@ -62,7 +62,7 @@ export async function generateBlogDraft(
     : "全国向けの記事です。";
 
   // JSON形式をやめて区切り文字方式にする（文字列の途中切れを防ぐ）
-  const prompt = `あなたはフィリピンパブ情報サイト「フィリピンパブNavi」のライターです。
+  const prompt = `あなたはフィリピンパブ情報サイト「夜トカイ」のライターです。
 SEO対策された高品質なブログ記事を書いてください。
 
 ## 記事テーマ

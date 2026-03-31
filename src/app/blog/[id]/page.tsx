@@ -46,13 +46,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (!post) return { title: "記事が見つかりません" };
 
-  const title = `${post.title} | フィリピンパブNavi`;
+  const title = `${post.title} | 夜トカイ`;
   const description = post.body.slice(0, 120);
 
   return {
     title,
     description,
-    keywords: ["フィリピンパブ", "フィリピンパブNavi", post.title],
+    keywords: ["フィリピンパブ", "夜トカイ", post.title],
     openGraph: { title, description },
     alternates: {
       canonical: `${process.env.NEXT_PUBLIC_SITE_URL ?? ""}/blog/${id}`,
@@ -94,11 +94,11 @@ export default async function BlogPostPage({ params }: Props) {
     datePublished: post.created_at,
     author: {
       "@type": "Organization",
-      name: "フィリピンパブNavi",
+      name: "夜トカイ",
     },
     publisher: {
       "@type": "Organization",
-      name: "フィリピンパブNavi",
+      name: "夜トカイ",
     },
     mainEntityOfPage: `${siteUrl}/blog/${id}`,
   };

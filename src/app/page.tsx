@@ -7,20 +7,12 @@ import { StoreCard } from "@/components/store/StoreCard";
 import type { Store, CastPreview } from "@/types/database";
 import { getTranslations } from "next-intl/server";
 
-// 都道府県・主要エリア一覧
+// 東海エリア一覧
 const PREFECTURES = [
-  { name: "東京", icon: "🗼", areas: ["新宿", "池袋", "六本木", "錦糸町", "上野"] },
-  { name: "大阪", icon: "🏯", areas: ["なんば", "心斎橋", "梅田", "北新地"] },
-  { name: "神奈川", icon: "⚓", areas: ["横浜", "川崎"] },
-  { name: "愛知", icon: "🦐", areas: ["栄", "錦", "大須"] },
+  { name: "愛知", icon: "🦐", areas: ["栄", "錦", "大須", "名古屋"] },
   { name: "静岡", icon: "🗻", areas: ["浜松", "静岡市", "沼津"] },
-  { name: "北海道", icon: "🦀", areas: ["すすきの", "札幌"] },
-  { name: "福岡", icon: "🍜", areas: ["中洲", "天神", "博多"] },
-  { name: "兵庫", icon: "🌹", areas: ["神戸", "三宮"] },
-  { name: "京都", icon: "⛩️", areas: ["木屋町", "先斗町"] },
-  { name: "広島", icon: "🕊️", areas: ["流川", "紙屋町"] },
-  { name: "宮城", icon: "🌿", areas: ["国分町", "仙台"] },
-  { name: "沖縄", icon: "🌺", areas: ["松山", "栄町"] },
+  { name: "岐阜", icon: "🏯", areas: ["岐阜市"] },
+  { name: "三重", icon: "🌊", areas: ["四日市"] },
 ];
 
 type SiteNews = {
@@ -83,7 +75,7 @@ export default async function HomePage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": "フィリピンパブNavi",
+    "name": "夜トカイ",
     "url": siteUrl,
     "description": "全国のフィリピンパブ・スナック情報ポータルサイト。エリアや口コミから人気のフィリピンパブを探せます。",
     "potentialAction": {
@@ -114,10 +106,8 @@ export default async function HomePage() {
 
         <div className="relative max-w-2xl mx-auto">
           <h1 className="text-5xl md:text-6xl font-black mb-4">
-            <span className="text-primary">フィリピンパブ</span>
-            <span className="text-accent">Na</span>
-            <span className="text-primary">v</span>
-            <span className="text-accent">i</span>
+            <span className="text-primary">夜</span>
+            <span className="text-white">トカイ</span>
           </h1>
           <p className="text-gray-300 text-lg mb-8">
             {t("heroSub")}

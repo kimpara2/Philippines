@@ -86,7 +86,7 @@ export function Footer() {
             <Link href="/faq" className="hover:text-gray-400 transition-colors">よくある質問</Link>
           </div>
           <div className="text-center text-gray-500 text-xs">
-            © 2026 フィリピンパブNavi All rights reserved.
+            © 2026 夜トカイ All rights reserved.
           </div>
         </div>
       </div>
