@@ -37,33 +37,38 @@ type Props = {
   searchParams: Promise<{ category?: string }>;
 };
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const { area } = await params;
+  const { category } = await searchParams;
   const decodedArea = decodeURIComponent(area);
   const subAreas = PREFECTURE_AREAS[decodedArea];
   const searchAreas = subAreas ? [decodedArea, ...subAreas] : [decodedArea];
 
   const supabase = await createClient();
-  const { count } = await supabase
+  let countQuery = supabase
     .from("stores")
     .select("*", { count: "exact", head: true })
     .in("area", searchAreas)
     .eq("is_published", true)
     .eq("is_approved", true);
+  if (category) countQuery = countQuery.eq("category", category);
+  const { count } = await countQuery;
 
-  const countText = count ? `${count}件掲載中` : "";
-  const title = `${decodedArea}のフィリピンパブ一覧${count ? `【${count}件】` : ""}`;
-  const description = `${decodedArea}のフィリピンパブ・スナック情報${countText}。${decodedArea}でフィリピンパブをお探しなら「フィリピンパブどっと混む！！」へ。営業時間・料金・アクセス・キャスト情報も充実。`;
+  const genre = category ?? "夜遊びスポット";
+  const title = `${decodedArea}の${genre}一覧${count ? `【${count}件】` : ""}`;
+  const description = category
+    ? `${decodedArea}の${category}${count ? `${count}件` : ""}を掲載。営業時間・料金・アクセス情報を夜トカイでチェック。`
+    : `${decodedArea}のフィリピンパブ・スナック・ガールズバー・バー・キャバクラ${count ? `${count}件` : ""}を掲載。夜トカイで${decodedArea}の夜遊び情報を探そう。`;
 
   return {
     title,
     description,
     openGraph: {
-      title: `${title} | フィリピンパブどっと混む！！`,
+      title: `${title} | 夜トカイ`,
       description,
     },
     alternates: {
-      canonical: `${process.env.NEXT_PUBLIC_SITE_URL ?? ""}/area/${area}`,
+      canonical: `${process.env.NEXT_PUBLIC_SITE_URL ?? ""}/area/${area}${category ? `?category=${encodeURIComponent(category)}` : ""}`,
     },
   };
 }
@@ -121,17 +126,19 @@ export default async function AreaPage({ params, searchParams }: Props) {
     photosByStore[p.store_id].push(p.url);
   });
 
-  // エリア別ブログ記事を取得
-  const { data: areaNewsRaw } = await supabase
+  // エリア別ブログ記事を取得（カテゴリ指定時はタイトル検索でも絞り込み）
+  let newsQuery = supabase
     .from("site_news")
     .select("id, title, body, category, thumbnail_url, created_at")
     .eq("area", decodedArea)
     .eq("is_published", true)
     .order("created_at", { ascending: false })
     .limit(3);
+  const { data: areaNewsRaw } = await newsQuery;
   const areaNews = areaNewsRaw as AreaNews[] | null;
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "";
+  const pageLabel = `${decodedArea}の${category ?? "夜遊びスポット"}`;
   const jsonLd = JSON.stringify([
     {
       "@context": "https://schema.org",
@@ -139,13 +146,13 @@ export default async function AreaPage({ params, searchParams }: Props) {
       itemListElement: [
         { "@type": "ListItem", position: 1, name: "トップ", item: siteUrl },
         { "@type": "ListItem", position: 2, name: "店舗一覧", item: siteUrl + "/stores" },
-        { "@type": "ListItem", position: 3, name: decodedArea + "のフィリピンパブ" },
+        { "@type": "ListItem", position: 3, name: pageLabel },
       ],
     },
     {
       "@context": "https://schema.org",
       "@type": "ItemList",
-      name: decodedArea + "のフィリピンパブ一覧",
+      name: pageLabel + "一覧",
       itemListElement: (stores ?? []).map((store, i) => ({
         "@type": "ListItem",
         position: i + 1,
@@ -224,7 +231,7 @@ export default async function AreaPage({ params, searchParams }: Props) {
       {areaNews && areaNews.length > 0 && (
         <div className="mt-12">
           <div className="flex items-center justify-between mb-5">
-            <h2 className="text-lg font-bold text-accent">📝 {decodedArea}のフィリピンパブ情報</h2>
+            <h2 className="text-lg font-bold text-accent">📝 {decodedArea}の{category ?? "夜遊び"}コラム</h2>
             <Link href="/blog" className="text-primary text-sm hover:underline">すべての記事を見る →</Link>
           </div>
           <div className="divide-y divide-dark-border border border-dark-border rounded-xl overflow-hidden">
