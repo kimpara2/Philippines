@@ -10,6 +10,8 @@ const ALL_AREAS = [
   "三重", "四日市",
 ];
 
+const CATEGORIES = ["フィリピンパブ", "スナック", "ガールズバー", "バー", "キャバクラ"];
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const supabase = await createClient();
   const { data: stores } = await supabase
@@ -31,6 +33,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
+  // エリア × カテゴリの組み合わせURL（13エリア × 5カテゴリ = 65件）
+  const areaCategoryUrls: MetadataRoute.Sitemap = ALL_AREAS.flatMap((area) =>
+    CATEGORIES.map((category) => ({
+      url: `${SITE_URL}/area/${encodeURIComponent(area)}?category=${encodeURIComponent(category)}`,
+      changeFrequency: "daily" as const,
+      priority: 0.65,
+    }))
+  );
+
   return [
     { url: SITE_URL, changeFrequency: "daily", priority: 1.0 },
     { url: `${SITE_URL}/stores`, changeFrequency: "daily", priority: 0.9 },
@@ -40,6 +51,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE_URL}/privacy`, changeFrequency: "yearly", priority: 0.3 },
     { url: `${SITE_URL}/terms`, changeFrequency: "yearly", priority: 0.3 },
     ...areaUrls,
+    ...areaCategoryUrls,
     ...storeUrls,
   ];
 }
