@@ -64,17 +64,17 @@ export function Header() {
           <Link href="/stores" className="block text-gray-300 hover:text-primary py-2" onClick={() => setMenuOpen(false)}>
             {t("storeList")}
           </Link>
-          <Link href="/area/東京" className="block text-gray-300 hover:text-primary py-2" onClick={() => setMenuOpen(false)}>
-            {t("tokyo")}
-          </Link>
-          <Link href="/area/大阪" className="block text-gray-300 hover:text-primary py-2" onClick={() => setMenuOpen(false)}>
-            {t("osaka")}
-          </Link>
-          <Link href="/area/名古屋" className="block text-gray-300 hover:text-primary py-2" onClick={() => setMenuOpen(false)}>
-            {t("nagoya")}
+          <Link href="/area/愛知" className="block text-gray-300 hover:text-primary py-2" onClick={() => setMenuOpen(false)}>
+            📍 愛知
           </Link>
           <Link href="/area/静岡" className="block text-gray-300 hover:text-primary py-2" onClick={() => setMenuOpen(false)}>
-            {t("shizuoka")}
+            📍 静岡
+          </Link>
+          <Link href="/area/岐阜" className="block text-gray-300 hover:text-primary py-2" onClick={() => setMenuOpen(false)}>
+            📍 岐阜
+          </Link>
+          <Link href="/area/三重" className="block text-gray-300 hover:text-primary py-2" onClick={() => setMenuOpen(false)}>
+            📍 三重
           </Link>
           <Link href="/blog" className="block text-gray-300 hover:text-primary py-2" onClick={() => setMenuOpen(false)}>
             {t("column")}
