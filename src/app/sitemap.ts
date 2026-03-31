@@ -4,17 +4,10 @@ import type { MetadataRoute } from "next";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://example.com";
 
 const ALL_AREAS = [
-  "東京", "新宿", "池袋", "六本木", "錦糸町", "上野",
-  "神奈川", "横浜", "川崎",
-  "愛知", "栄", "錦", "大須",
+  "愛知", "栄", "錦", "大須", "名古屋",
   "静岡", "浜松", "静岡市", "沼津",
-  "北海道", "すすきの", "札幌",
-  "福岡", "中洲", "天神", "博多",
-  "兵庫", "神戸", "三宮",
-  "京都", "木屋町", "先斗町",
-  "広島", "流川", "紙屋町",
-  "宮城", "国分町", "仙台",
-  "沖縄", "松山", "栄町",
+  "岐阜", "岐阜市",
+  "三重", "四日市",
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

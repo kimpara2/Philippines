@@ -8,21 +8,28 @@ import type { Store, CastPreview } from "@/types/database";
 
 export const metadata: Metadata = {
   title: "店舗一覧",
-  description: "全国のフィリピンパブ・スナック一覧",
+  description: "東海エリアのフィリピンパブ・スナック・ガールズバー・バー・キャバクラ一覧",
 };
 
 const AREAS = [
-  "すすきの", "仙台",
-  "新宿", "池袋", "六本木", "錦糸町", "上野", "横浜", "川崎",
-  "栄", "錦", "浜松", "静岡",
-  "なんば", "心斎橋", "梅田", "北新地", "神戸", "京都",
-  "広島", "松山",
-  "中洲", "天神", "熊本", "那覇",
+  "栄", "錦", "大須", "名古屋",
+  "浜松", "静岡市", "沼津",
+  "岐阜市",
+  "四日市",
+];
+
+const CATEGORIES = [
+  "フィリピンパブ",
+  "スナック",
+  "ガールズバー",
+  "バー",
+  "キャバクラ",
 ];
 
 type SearchParams = {
   area?: string;
   q?: string;
+  category?: string;
 };
 
 type Props = {
@@ -30,7 +37,7 @@ type Props = {
 };
 
 export default async function StoresPage({ searchParams }: Props) {
-  const { area, q } = await searchParams;
+  const { area, q, category } = await searchParams;
   const supabase = await createClient();
 
   let query = supabase
@@ -42,6 +49,11 @@ export default async function StoresPage({ searchParams }: Props) {
   // エリアフィルター
   if (area) {
     query = query.eq("area", area);
+  }
+
+  // カテゴリフィルター
+  if (category) {
+    query = query.eq("category", category);
   }
 
   // キーワード検索
@@ -89,32 +101,60 @@ export default async function StoresPage({ searchParams }: Props) {
     <div className="max-w-6xl mx-auto px-4 py-10">
       <h1 className="text-2xl font-black text-white mb-2">
         🏪 店舗一覧
+        {category && <span className="text-primary ml-2">— {category}</span>}
         {area && <span className="text-primary ml-2">— {area}</span>}
       </h1>
       <p className="text-gray-400 text-sm mb-8">
         {stores?.length ?? 0}件の店舗が見つかりました
       </p>
 
-      {/* エリアフィルター */}
-      <div className="flex flex-wrap gap-2 mb-8">
+      {/* カテゴリフィルター */}
+      <div className="flex flex-wrap gap-2 mb-4">
         <Link
-          href="/stores"
+          href={area ? `/stores?area=${area}` : "/stores"}
           className={`px-4 py-2 rounded-full text-sm font-bold transition-colors ${
-            !area
+            !category
               ? "bg-primary text-white"
               : "bg-dark-card border border-dark-border text-gray-300 hover:border-primary"
           }`}
         >
           すべて
         </Link>
+        {CATEGORIES.map((c) => (
+          <Link
+            key={c}
+            href={`/stores?category=${encodeURIComponent(c)}${area ? `&area=${area}` : ""}`}
+            className={`px-4 py-2 rounded-full text-sm font-bold transition-colors ${
+              category === c
+                ? "bg-primary text-white"
+                : "bg-dark-card border border-dark-border text-gray-300 hover:border-primary"
+            }`}
+          >
+            {c}
+          </Link>
+        ))}
+      </div>
+
+      {/* エリアフィルター */}
+      <div className="flex flex-wrap gap-2 mb-8">
+        <Link
+          href={category ? `/stores?category=${encodeURIComponent(category)}` : "/stores"}
+          className={`px-3 py-1.5 rounded-full text-xs font-bold transition-colors ${
+            !area
+              ? "bg-accent text-dark"
+              : "bg-dark-card border border-dark-border text-gray-400 hover:border-accent"
+          }`}
+        >
+          全エリア
+        </Link>
         {AREAS.map((a) => (
           <Link
             key={a}
-            href={`/stores?area=${a}`}
-            className={`px-4 py-2 rounded-full text-sm font-bold transition-colors ${
+            href={`/stores?area=${a}${category ? `&category=${encodeURIComponent(category)}` : ""}`}
+            className={`px-3 py-1.5 rounded-full text-xs font-bold transition-colors ${
               area === a
-                ? "bg-primary text-white"
-                : "bg-dark-card border border-dark-border text-gray-300 hover:border-primary"
+                ? "bg-accent text-dark"
+                : "bg-dark-card border border-dark-border text-gray-400 hover:border-accent"
             }`}
           >
             {a}

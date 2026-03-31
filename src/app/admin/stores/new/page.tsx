@@ -9,18 +9,18 @@ import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
 
 const ALL_AREAS = [
-  { pref: "東京", areas: ["新宿", "池袋", "六本木", "錦糸町", "上野"] },
-  { pref: "大阪", areas: ["なんば", "心斎橋", "梅田", "北新地"] },
-  { pref: "神奈川", areas: ["横浜", "川崎"] },
-  { pref: "愛知", areas: ["栄", "錦", "大須"] },
+  { pref: "愛知", areas: ["栄", "錦", "大須", "名古屋"] },
   { pref: "静岡", areas: ["浜松", "静岡市", "沼津"] },
-  { pref: "北海道", areas: ["すすきの", "札幌"] },
-  { pref: "福岡", areas: ["中洲", "天神", "博多"] },
-  { pref: "兵庫", areas: ["神戸", "三宮"] },
-  { pref: "京都", areas: ["木屋町", "先斗町"] },
-  { pref: "広島", areas: ["流川", "紙屋町"] },
-  { pref: "宮城", areas: ["国分町", "仙台"] },
-  { pref: "沖縄", areas: ["松山", "栄町"] },
+  { pref: "岐阜", areas: ["岐阜市"] },
+  { pref: "三重", areas: ["四日市"] },
+];
+
+const CATEGORIES = [
+  "フィリピンパブ",
+  "スナック",
+  "ガールズバー",
+  "バー",
+  "キャバクラ",
 ];
 
 function generateSlug(name: string): string {
@@ -132,6 +132,7 @@ export default function AdminNewStorePage() {
     name: "",
     name_kana: "",
     area: "",
+    category: "フィリピンパブ",
     address: "",
     nearest_station: "",
     phone: "",
@@ -168,6 +169,7 @@ export default function AdminNewStorePage() {
       name: form.name.trim(),
       name_kana: form.name_kana.trim() || null,
       area: form.area,
+      category: form.category || "フィリピンパブ",
       address: form.address.trim() || null,
       nearest_station: form.nearest_station.trim() || null,
       phone: form.phone.trim() || null,
@@ -288,20 +290,30 @@ export default function AdminNewStorePage() {
           </div>
         </div>
 
-        {/* エリア */}
-        <div>
-          <label className={labelCls}>エリア <span className="text-red-400">*</span></label>
-          <select className={inputCls} value={form.area} onChange={(e) => set("area", e.target.value)}>
-            <option value="">-- エリアを選択 --</option>
-            {ALL_AREAS.map(({ pref, areas }) => (
-              <optgroup key={pref} label={pref}>
-                <option value={pref}>{pref}（都道府県）</option>
-                {areas.map((a) => (
-                  <option key={a} value={a}>{a}</option>
-                ))}
-              </optgroup>
-            ))}
-          </select>
+        {/* エリア・カテゴリ */}
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className={labelCls}>エリア <span className="text-red-400">*</span></label>
+            <select className={inputCls} value={form.area} onChange={(e) => set("area", e.target.value)}>
+              <option value="">-- エリアを選択 --</option>
+              {ALL_AREAS.map(({ pref, areas }) => (
+                <optgroup key={pref} label={pref}>
+                  <option value={pref}>{pref}（県）</option>
+                  {areas.map((a) => (
+                    <option key={a} value={a}>{a}</option>
+                  ))}
+                </optgroup>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className={labelCls}>カテゴリ <span className="text-red-400">*</span></label>
+            <select className={inputCls} value={form.category} onChange={(e) => set("category", e.target.value)}>
+              {CATEGORIES.map((c) => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+            </select>
+          </div>
         </div>
 
         {/* 住所・最寄り駅 */}

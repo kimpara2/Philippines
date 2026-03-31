@@ -32,6 +32,7 @@ export type Store = {
   twitter_url: string | null;
   instagram_url: string | null;
   tiktok_url: string | null;
+  category: string | null;
   min_price: number | null;
   max_price: number | null;
   is_published: boolean;

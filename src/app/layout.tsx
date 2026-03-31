@@ -14,18 +14,18 @@ const notoSansJP = Noto_Sans_JP({
 
 export const metadata: Metadata = {
   title: {
-    default: "フィリピンパブNavi | 全国のフィリピンパブ情報",
-    template: "%s | フィリピンパブNavi",
+    default: "夜トカイ | 東海の夜遊びガイド",
+    template: "%s | 夜トカイ",
   },
   description:
-    "全国のフィリピンパブ・スナック情報を網羅！東京・大阪・名古屋など全国の店舗一覧・キャスト紹介・口コミ・アクセスなど充実の情報をお届けします。",
-  keywords: ["フィリピンパブ", "全国", "スナック", "キャスト", "フィリピン", "東京", "大阪", "名古屋"],
+    "東海（愛知・静岡・岐阜・三重）のフィリピンパブ・スナック・ガールズバー・バー・キャバクラ情報を網羅！浜松・名古屋・静岡市など東海エリアの夜遊び情報をお届けします。",
+  keywords: ["フィリピンパブ", "スナック", "ガールズバー", "キャバクラ", "バー", "東海", "愛知", "静岡", "浜松", "名古屋"],
   verification: {
     google: "5sf8lHm6vRigWQL6t6HZDTpmxIuQnHacZ3aU9JuQp48",
   },
   openGraph: {
-    title: "フィリピンパブNavi | 全国のフィリピンパブ情報",
-    description: "全国のフィリピンパブ・スナック情報を網羅！",
+    title: "夜トカイ | 東海の夜遊びガイド",
+    description: "東海エリアのフィリピンパブ・スナック・ガールズバー・バー・キャバクラ情報を網羅！",
     locale: "ja_JP",
     type: "website",
   },

@@ -11,13 +11,13 @@ const config: Config = {
       colors: {
         // サイトのメインカラー
         primary: {
-          DEFAULT: "#db2777",  // ホットピンク
-          hover: "#be185d",
-          light: "#fce7f3",
+          DEFAULT: "#7c3aed",  // ディープパープル
+          hover: "#6d28d9",
+          light: "#ede9fe",
         },
         accent: {
-          DEFAULT: "#facc15",  // 金色
-          hover: "#eab308",
+          DEFAULT: "#f59e0b",  // アンバーゴールド
+          hover: "#d97706",
         },
         dark: {
           DEFAULT: "#0f172a",  // 濃い紺（背景）

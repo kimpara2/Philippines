@@ -61,6 +61,7 @@ export default function DashboardStorePage() {
           twitter_url: store.twitter_url,
           instagram_url: store.instagram_url,
           tiktok_url: store.tiktok_url,
+          category: store.category,
         })
         .eq("id", store.id);
 
@@ -93,13 +94,19 @@ export default function DashboardStorePage() {
   }
 
   const AREAS = [
-    "すすきの（札幌）", "仙台",
-    "新宿", "池袋", "六本木", "錦糸町", "上野", "横浜", "川崎",
-    "栄（名古屋）", "錦（名古屋）", "浜松", "静岡",
-    "なんば", "心斎橋", "梅田", "北新地", "神戸", "京都",
-    "広島", "松山",
-    "中洲（福岡）", "天神（福岡）", "熊本", "那覇",
+    "栄", "錦", "大須", "名古屋",
+    "浜松", "静岡市", "沼津",
+    "岐阜市",
+    "四日市",
     "その他",
+  ];
+
+  const CATEGORIES = [
+    "フィリピンパブ",
+    "スナック",
+    "ガールズバー",
+    "バー",
+    "キャバクラ",
   ];
 
   return (
@@ -169,18 +176,32 @@ export default function DashboardStorePage() {
             />
           </div>
 
-          <div>
-            <label className="text-gray-400 text-sm block mb-1.5">エリア</label>
-            <select
-              value={store.area ?? ""}
-              onChange={(e) => setStore({ ...store, area: e.target.value })}
-              className="w-full bg-dark border border-dark-border rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-primary"
-            >
-              <option value="">選択してください</option>
-              {AREAS.map((a) => (
-                <option key={a} value={a}>{a}</option>
-              ))}
-            </select>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="text-gray-400 text-sm block mb-1.5">エリア</label>
+              <select
+                value={store.area ?? ""}
+                onChange={(e) => setStore({ ...store, area: e.target.value })}
+                className="w-full bg-dark border border-dark-border rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-primary"
+              >
+                <option value="">選択してください</option>
+                {AREAS.map((a) => (
+                  <option key={a} value={a}>{a}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="text-gray-400 text-sm block mb-1.5">カテゴリ</label>
+              <select
+                value={store.category ?? "フィリピンパブ"}
+                onChange={(e) => setStore({ ...store, category: e.target.value })}
+                className="w-full bg-dark border border-dark-border rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-primary"
+              >
+                {CATEGORIES.map((c) => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+              </select>
+            </div>
           </div>
 
           <div>
