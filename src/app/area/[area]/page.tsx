@@ -126,7 +126,7 @@ export default async function AreaPage({ params, searchParams }: Props) {
     photosByStore[p.store_id].push(p.url);
   });
 
-  // エリア別ブログ記事を取得（カテゴリ指定時はタイトル検索でも絞り込み）
+  // エリア別ブログ記事を取得（カテゴリ指定時はタイトルでジャンル絞り込み）
   let newsQuery = supabase
     .from("site_news")
     .select("id, title, body, category, thumbnail_url, created_at")
@@ -134,6 +134,7 @@ export default async function AreaPage({ params, searchParams }: Props) {
     .eq("is_published", true)
     .order("created_at", { ascending: false })
     .limit(3);
+  if (category) newsQuery = newsQuery.ilike("title", `%${category}%`);
   const { data: areaNewsRaw } = await newsQuery;
   const areaNews = areaNewsRaw as AreaNews[] | null;
 
@@ -227,8 +228,8 @@ export default async function AreaPage({ params, searchParams }: Props) {
         </div>
       )}
 
-      {/* エリア別ブログ記事（カテゴリ絞り込み中は非表示） */}
-      {!category && areaNews && areaNews.length > 0 && (
+      {/* エリア別ブログ記事 */}
+      {areaNews && areaNews.length > 0 && (
         <div className="mt-12">
           <div className="flex items-center justify-between mb-5">
             <h2 className="text-lg font-bold text-accent">📝 {decodedArea}の{category ?? "夜遊び"}コラム</h2>
