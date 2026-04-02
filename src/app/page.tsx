@@ -106,8 +106,8 @@ export default async function HomePage() {
 
         <div className="relative max-w-2xl mx-auto">
           <h1 className="text-5xl md:text-6xl font-black mb-4">
-            <span className="text-primary">夜</span>
-            <span className="text-white">トカイ</span>
+            <span className="text-white">東海</span>
+            <span className="text-accent">NIGHT</span>
           </h1>
           <p className="text-gray-300 text-lg mb-8">
             {t("heroSub")}
