@@ -75,7 +75,7 @@ export default async function HomePage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": "夜トカイ",
+    "name": "東海NIGHT",
     "url": siteUrl,
     "description": "全国のフィリピンパブ・スナック情報ポータルサイト。エリアや口コミから人気のフィリピンパブを探せます。",
     "potentialAction": {

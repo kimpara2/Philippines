@@ -57,14 +57,14 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   const genre = category ?? "夜遊びスポット";
   const title = `${decodedArea}の${genre}一覧${count ? `【${count}件】` : ""}`;
   const description = category
-    ? `${decodedArea}の${category}${count ? `${count}件` : ""}を掲載。営業時間・料金・アクセス情報を夜トカイでチェック。`
-    : `${decodedArea}のフィリピンパブ・スナック・ガールズバー・バー・キャバクラ${count ? `${count}件` : ""}を掲載。夜トカイで${decodedArea}の夜遊び情報を探そう。`;
+    ? `${decodedArea}の${category}${count ? `${count}件` : ""}を掲載。営業時間・料金・アクセス情報を東海NIGHTでチェック。`
+    : `${decodedArea}のフィリピンパブ・スナック・ガールズバー・バー・キャバクラ${count ? `${count}件` : ""}を掲載。東海NIGHTで${decodedArea}の夜遊び情報を探そう。`;
 
   return {
     title,
     description,
     openGraph: {
-      title: `${title} | 夜トカイ`,
+      title: `${title} | 東海NIGHT`,
       description,
     },
     alternates: {

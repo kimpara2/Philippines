@@ -2,10 +2,10 @@ export function Logo() {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 220 48"
+      viewBox="0 0 240 48"
       fill="none"
       className="h-10 w-auto"
-      aria-label="夜トカイ"
+      aria-label="東海NIGHT"
     >
       {/* ── アイコン背景 ── */}
       <rect x="1" y="1" width="46" height="46" rx="10" fill="#1e1b4b" />
@@ -26,27 +26,28 @@ export function Logo() {
       <circle cx="30" cy="17" r="0.8" fill="white" fillOpacity="0.8" />
 
       {/* ── メインテキスト ── */}
-      {/* 夜（パープル） */}
+      {/* 東海（白） */}
       <text
         x="58"
-        y="36"
+        y="35"
         fontFamily="'Noto Sans JP', sans-serif"
-        fontSize="26"
-        fontWeight="900"
-        fill="#7c3aed"
-      >
-        夜
-      </text>
-      {/* トカイ（白） */}
-      <text
-        x="85"
-        y="36"
-        fontFamily="'Noto Sans JP', sans-serif"
-        fontSize="26"
+        fontSize="25"
         fontWeight="900"
         fill="white"
       >
-        トカイ
+        東海
+      </text>
+      {/* NIGHT（アンバーゴールド） */}
+      <text
+        x="112"
+        y="35"
+        fontFamily="'Arial Black', Arial, sans-serif"
+        fontSize="25"
+        fontWeight="900"
+        fill="#f59e0b"
+        letterSpacing="1"
+      >
+        NIGHT
       </text>
 
       {/* ── サブテキスト ── */}
@@ -54,12 +55,12 @@ export function Logo() {
         x="58"
         y="47"
         fontFamily="Arial, sans-serif"
-        fontSize="9"
+        fontSize="8.5"
         fontWeight="500"
         fill="#94a3b8"
         letterSpacing="2"
       >
-        YORU TOKAI
+        TOKAI-NIGHT.COM
       </text>
     </svg>
   );

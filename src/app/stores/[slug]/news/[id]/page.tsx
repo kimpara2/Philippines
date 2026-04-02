@@ -74,7 +74,7 @@ export default async function StoreNewsDetailPage({ params }: Props) {
     },
     publisher: {
       "@type": "Organization",
-      name: "夜トカイ",
+      name: "東海NIGHT",
     },
     mainEntityOfPage: `${process.env.NEXT_PUBLIC_SITE_URL ?? ""}/stores/${slug}/news/${id}`,
   };

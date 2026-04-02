@@ -14,8 +14,8 @@ const notoSansJP = Noto_Sans_JP({
 
 export const metadata: Metadata = {
   title: {
-    default: "夜トカイ | 東海の夜遊びガイド",
-    template: "%s | 夜トカイ",
+    default: "東海NIGHT | 東海の夜遊びガイド",
+    template: "%s | 東海NIGHT",
   },
   description:
     "東海（愛知・静岡・岐阜・三重）のフィリピンパブ・スナック・ガールズバー・バー・キャバクラ情報を網羅！浜松・名古屋・静岡市など東海エリアの夜遊び情報をお届けします。",
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     google: "5sf8lHm6vRigWQL6t6HZDTpmxIuQnHacZ3aU9JuQp48",
   },
   openGraph: {
-    title: "夜トカイ | 東海の夜遊びガイド",
+    title: "東海NIGHT | 東海の夜遊びガイド",
     description: "東海エリアのフィリピンパブ・スナック・ガールズバー・バー・キャバクラ情報を網羅！",
     locale: "ja_JP",
     type: "website",

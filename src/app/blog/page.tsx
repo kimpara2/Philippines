@@ -6,8 +6,8 @@ import Image from "next/image";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "ニュース・コラム | 夜トカイ",
-  description: "夜トカイの最新ニュース・コラム・イベント情報をお届けします。全国のフィリピンパブ情報を発信中！",
+  title: "ニュース・コラム | 東海NIGHT",
+  description: "東海NIGHTの最新ニュース・コラム・イベント情報をお届けします。全国のフィリピンパブ情報を発信中！",
   alternates: {
     canonical: `${process.env.NEXT_PUBLIC_SITE_URL ?? ""}/blog`,
   },
@@ -58,7 +58,7 @@ export default async function BlogPage() {
       </nav>
 
       <h1 className="text-2xl font-black text-white mb-2">📝 ニュース・コラム</h1>
-      <p className="text-gray-400 text-sm mb-8">夜トカイからの最新情報をお届けします</p>
+      <p className="text-gray-400 text-sm mb-8">東海NIGHTからの最新情報をお届けします</p>
 
       {/* カテゴリタブ */}
       <div className="flex flex-wrap gap-2 mb-8">

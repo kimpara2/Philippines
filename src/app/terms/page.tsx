@@ -4,8 +4,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "利用規約 | 夜トカイ",
-  description: "夜トカイの利用規約です。サービスをご利用の前にお読みください。",
+  title: "利用規約 | 東海NIGHT",
+  description: "東海NIGHTの利用規約です。サービスをご利用の前にお読みください。",
 };
 
 export default function TermsPage() {
@@ -26,7 +26,7 @@ export default function TermsPage() {
         <section>
           <h2 className="text-white font-bold text-base mb-3">第1条（適用）</h2>
           <p>
-            本規約は、夜トカイ（以下「当サイト」）が提供するサービスの利用条件を定めるものです。
+            本規約は、東海NIGHT（以下「当サイト」）が提供するサービスの利用条件を定めるものです。
             当サイトを利用するすべてのユーザーは、本規約に同意したものとみなします。
           </p>
         </section>
