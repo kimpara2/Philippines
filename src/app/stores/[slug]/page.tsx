@@ -328,13 +328,13 @@ export default async function StoreDetailPage({ params }: Props) {
               {store.price_system && (
                 <div>
                   <div className="text-gray-500 text-xs mb-0.5">料金システム</div>
-                  <div className="text-white text-sm">🧾 {store.price_system}</div>
+                  <div className="text-white text-sm whitespace-pre-wrap">🧾 {store.price_system}</div>
                 </div>
               )}
               {store.first_visit_budget && (
                 <div>
                   <div className="text-gray-500 text-xs mb-0.5">初回予算感</div>
-                  <div className="text-accent font-bold text-sm">👛 {store.first_visit_budget}</div>
+                  <div className="text-accent font-bold text-sm whitespace-pre-wrap">👛 {store.first_visit_budget}</div>
                 </div>
               )}
             </div>

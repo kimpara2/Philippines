@@ -441,14 +441,14 @@ export default function AdminStoreEditPage() {
             <input className={inputCls} type="number" value={form.max_price} onChange={(e) => set("max_price", e.target.value)} placeholder="15000" />
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-4">
           <div>
             <label className={labelCls}>料金システム</label>
-            <input className={inputCls} value={form.price_system} onChange={(e) => set("price_system", e.target.value)} placeholder="例：セット料金制・時間制・飲み放題" />
+            <textarea className={`${inputCls} h-24 resize-y`} value={form.price_system} onChange={(e) => set("price_system", e.target.value)} placeholder="例：セット料金制（90分飲み放題＋指名料込み）&#10;延長30分ごとに2,000円追加" />
           </div>
           <div>
             <label className={labelCls}>初回予算感</label>
-            <input className={inputCls} value={form.first_visit_budget} onChange={(e) => set("first_visit_budget", e.target.value)} placeholder="例：1万円〜1.5万円" />
+            <textarea className={`${inputCls} h-24 resize-y`} value={form.first_visit_budget} onChange={(e) => set("first_visit_budget", e.target.value)} placeholder="例：1万円〜1.5万円&#10;（セット料金8,000円＋指名料2,000円＋チップ程度）" />
           </div>
         </div>
 
