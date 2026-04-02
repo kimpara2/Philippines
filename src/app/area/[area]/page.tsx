@@ -227,8 +227,8 @@ export default async function AreaPage({ params, searchParams }: Props) {
         </div>
       )}
 
-      {/* エリア別ブログ記事 */}
-      {areaNews && areaNews.length > 0 && (
+      {/* エリア別ブログ記事（カテゴリ絞り込み中は非表示） */}
+      {!category && areaNews && areaNews.length > 0 && (
         <div className="mt-12">
           <div className="flex items-center justify-between mb-5">
             <h2 className="text-lg font-bold text-accent">📝 {decodedArea}の{category ?? "夜遊び"}コラム</h2>
