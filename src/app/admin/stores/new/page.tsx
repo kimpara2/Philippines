@@ -140,6 +140,8 @@ export default function AdminNewStorePage() {
     regular_holiday: "",
     min_price: "",
     max_price: "",
+    price_system: "",
+    first_visit_budget: "",
     description: "",
     website_url: "",
     twitter_url: "",
@@ -177,6 +179,8 @@ export default function AdminNewStorePage() {
       regular_holiday: form.regular_holiday.trim() || null,
       min_price: form.min_price ? parseInt(form.min_price) : null,
       max_price: form.max_price ? parseInt(form.max_price) : null,
+      price_system: form.price_system.trim() || null,
+      first_visit_budget: form.first_visit_budget.trim() || null,
       description: form.description.trim() || null,
       website_url: form.website_url.trim() || null,
       twitter_url: form.twitter_url.trim() || null,
@@ -357,6 +361,16 @@ export default function AdminNewStorePage() {
           <div>
             <label className={labelCls}>料金（上限）¥</label>
             <input className={inputCls} type="number" value={form.max_price} onChange={(e) => set("max_price", e.target.value)} placeholder="15000" />
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className={labelCls}>料金システム</label>
+            <input className={inputCls} value={form.price_system} onChange={(e) => set("price_system", e.target.value)} placeholder="例：セット料金制・時間制・飲み放題" />
+          </div>
+          <div>
+            <label className={labelCls}>初回予算感</label>
+            <input className={inputCls} value={form.first_visit_budget} onChange={(e) => set("first_visit_budget", e.target.value)} placeholder="例：1万円〜1.5万円" />
           </div>
         </div>
 

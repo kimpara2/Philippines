@@ -35,6 +35,8 @@ export type Store = {
   category: string | null;
   min_price: number | null;
   max_price: number | null;
+  price_system: string | null;
+  first_visit_budget: string | null;
   is_published: boolean;
   is_approved: boolean;
   owner_id: string | null;

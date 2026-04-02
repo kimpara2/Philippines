@@ -301,6 +301,28 @@ export default function DashboardStorePage() {
               />
             </div>
           </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="text-gray-400 text-sm block mb-1.5">料金システム</label>
+              <input
+                type="text"
+                value={store.price_system ?? ""}
+                onChange={(e) => setStore({ ...store, price_system: e.target.value || null })}
+                placeholder="例：セット料金制・時間制・飲み放題"
+                className="w-full bg-dark border border-dark-border rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-primary"
+              />
+            </div>
+            <div>
+              <label className="text-gray-400 text-sm block mb-1.5">初回予算感</label>
+              <input
+                type="text"
+                value={store.first_visit_budget ?? ""}
+                onChange={(e) => setStore({ ...store, first_visit_budget: e.target.value || null })}
+                placeholder="例：1万円〜1.5万円"
+                className="w-full bg-dark border border-dark-border rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-primary"
+              />
+            </div>
+          </div>
         </div>
 
         {/* SNS情報 */}
