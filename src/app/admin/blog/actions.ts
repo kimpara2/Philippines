@@ -6,6 +6,23 @@ type GenerateResult =
   | { ok: true; title: string; body: string; thumbnail_url: string | null }
   | { ok: false; error: string };
 
+export type StoreInfo = {
+  name: string;
+  area: string | null;
+  category: string | null;
+  address: string | null;
+  nearest_station: string | null;
+  open_hours: string | null;
+  regular_holiday: string | null;
+  min_price: number | null;
+  max_price: number | null;
+  price_system: string | null;
+  first_visit_budget: string | null;
+  description: string | null;
+  slug: string;
+  website_url: string | null;
+};
+
 // Wikipedia APIからエリア情報を取得（無料・APIキー不要）
 async function fetchAreaContext(area: string): Promise<string> {
   try {
@@ -101,6 +118,83 @@ TITLE: ここにタイトル（35〜45文字）
     const titleMatch = raw.match(/TITLE:\s*(.+)/);
     const bodyMatch = raw.match(/===BODY===\s*([\s\S]+)/);
 
+    const title = titleMatch?.[1]?.trim() ?? "";
+    const body = bodyMatch?.[1]?.trim() ?? "";
+
+    if (!title || !body) {
+      return { ok: false, error: "AIの応答形式が不正でした。もう一度試してください。" };
+    }
+
+    return { ok: true, title, body, thumbnail_url };
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e);
+    return { ok: false, error: "生成に失敗しました: " + msg };
+  }
+}
+
+// 店舗情報をもとに「行ってみた」体験談記事を生成
+export async function generateStoreBlogDraft(store: StoreInfo): Promise<GenerateResult> {
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) return { ok: false, error: "ANTHROPIC_API_KEY が設定されていません。" };
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://tokai-night.com";
+  const storePageUrl = `${siteUrl}/stores/${store.slug}`;
+
+  const priceText = store.min_price && store.max_price
+    ? `${store.min_price.toLocaleString()}円〜${store.max_price.toLocaleString()}円`
+    : store.min_price ? `${store.min_price.toLocaleString()}円〜` : "要確認";
+
+  const storeContext = `
+店舗名: ${store.name}
+エリア: ${store.area ?? ""}
+カテゴリ: ${store.category ?? ""}
+住所: ${store.address ?? "不明"}
+最寄り駅: ${store.nearest_station ?? "不明"}
+営業時間: ${store.open_hours ?? "不明"}
+定休日: ${store.regular_holiday ?? "不定休"}
+料金目安: ${priceText}
+料金システム: ${store.price_system ?? "不明"}
+初回予算感: ${store.first_visit_budget ?? "不明"}
+店舗説明: ${store.description ?? ""}
+公式サイト: ${store.website_url ?? "なし"}
+東海NIGHTの店舗ページURL: ${storePageUrl}
+`.trim();
+
+  const thumbnail_url = await fetchThumbnail(store.area);
+
+  const prompt = `あなたはナイトライフ情報サイト「東海NIGHT」のライターです。
+以下の店舗に実際に行ったような体験談ブログ記事を書いてください。
+
+## 店舗情報
+${storeContext}
+
+## 執筆条件
+- 文字数: 2000〜3000文字
+- 読者: その店舗に行くか迷っている20〜50代男性
+- トーン: 実際に行った人のリアルな体験談風、友人に話すような自然な文体
+- マークダウン記法を使う（## で大見出し、### で小見出し、**テキスト** で太字）
+- 段落の間は空行を入れる
+- 料金・雰囲気・スタッフ・お酒・おすすめポイントを具体的に書く
+- 記事の最後に必ず以下の内部リンクを入れる:
+  [${store.name}の詳細・予約はこちら](${storePageUrl})
+- 構成: キャッチーなリード文 → ## 店舗の雰囲気 → ## スタッフ・キャスト → ## 料金・システム → ## こんな人におすすめ → ## まとめ＋内部リンク
+
+## 出力形式（厳守）
+TITLE: ここにタイトル（35〜50文字、「行ってみた」「レポート」「体験談」などを含める）
+===BODY===
+ここに本文（マークダウン形式）`;
+
+  try {
+    const client = new Anthropic({ apiKey });
+    const message = await client.messages.create({
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: 4096,
+      messages: [{ role: "user", content: prompt }],
+    });
+
+    const raw = message.content[0].type === "text" ? message.content[0].text.trim() : "";
+    const titleMatch = raw.match(/TITLE:\s*(.+)/);
+    const bodyMatch = raw.match(/===BODY===\s*([\s\S]+)/);
     const title = titleMatch?.[1]?.trim() ?? "";
     const body = bodyMatch?.[1]?.trim() ?? "";
 

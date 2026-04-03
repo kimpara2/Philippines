@@ -5,7 +5,7 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
-import { generateBlogDraft } from "./actions";
+import { generateBlogDraft, generateStoreBlogDraft, type StoreInfo } from "./actions";
 import { MarkdownEditor } from "@/components/admin/MarkdownEditor";
 
 type SiteNews = {
@@ -54,6 +54,11 @@ export default function AdminBlogPage() {
   const [aiArea, setAiArea] = useState("");
   const [aiGenerating, setAiGenerating] = useState(false);
   const [aiError, setAiError] = useState("");
+  // 店舗体験談モード
+  const [stores, setStores] = useState<StoreInfo[]>([]);
+  const [selectedStoreSlug, setSelectedStoreSlug] = useState("");
+  const [storeGenerating, setStoreGenerating] = useState(false);
+  const [aiMode, setAiMode] = useState<"keyword" | "store">("keyword");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const supabase = createClient();
 
@@ -70,7 +75,7 @@ export default function AdminBlogPage() {
     setShowForm(true);
   }
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); loadStores(); }, []);
 
   async function load() {
     const { data } = await supabase
@@ -78,6 +83,31 @@ export default function AdminBlogPage() {
       .select("*")
       .order("created_at", { ascending: false });
     setPosts(data ?? []);
+  }
+
+  async function loadStores() {
+    const { data } = await supabase
+      .from("stores")
+      .select("name, area, category, address, nearest_station, open_hours, regular_holiday, min_price, max_price, price_system, first_visit_budget, description, slug, website_url")
+      .eq("is_published", true)
+      .eq("is_approved", true)
+      .order("name");
+    setStores((data ?? []) as StoreInfo[]);
+  }
+
+  async function handleStoreGenerate() {
+    if (!selectedStoreSlug) { setAiError("店舗を選択してください"); return; }
+    const store = stores.find((s) => s.slug === selectedStoreSlug);
+    if (!store) return;
+    setStoreGenerating(true);
+    setAiError("");
+    const result = await generateStoreBlogDraft(store);
+    setStoreGenerating(false);
+    if (!result.ok) { setAiError(result.error); return; }
+    setEditing(null);
+    setForm({ title: result.title, body: result.body, category: "column", thumbnail_url: result.thumbnail_url ?? null, area: store.area ?? null });
+    setUploadMsg("");
+    setShowForm(true);
   }
 
   function openNew() {
@@ -170,45 +200,74 @@ export default function AdminBlogPage() {
           <h2 className="text-white font-bold text-sm">AI下書き生成</h2>
           <span className="text-xs text-purple-400 bg-purple-900/40 px-2 py-0.5 rounded-full border border-purple-500/30">Claude AI</span>
         </div>
-        <p className="text-gray-400 text-xs mb-4">記事テーマを入力するとAIがSEO対策済みの下書きを生成します。内容を確認・編集してから公開してください。</p>
-        <div className="flex gap-3 flex-wrap">
-          <input
-            type="text"
-            value={aiKeyword}
-            onChange={(e) => setAiKeyword(e.target.value)}
-            placeholder="例：新宿フィリピンパブの楽しみ方、初めてのフィリピンパブガイド"
-            className="flex-1 min-w-0 bg-dark border border-dark-border rounded-lg px-4 py-2.5 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-purple-500"
-            onKeyDown={(e) => { if (e.key === "Enter") handleAiGenerate(); }}
-          />
-          <select
-            value={aiArea}
-            onChange={(e) => setAiArea(e.target.value)}
-            className="bg-dark border border-dark-border rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-purple-500 shrink-0"
-          >
-            <option value="">全国向け</option>
-            {ALL_AREAS.map(({ pref, areas }) => (
-              <optgroup key={pref} label={pref}>
-                <option value={pref}>{pref}</option>
-                {areas.map((a) => <option key={a} value={a}>{a}</option>)}
-              </optgroup>
-            ))}
-          </select>
-          <button
-            onClick={handleAiGenerate}
-            disabled={aiGenerating}
-            className="bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white font-bold px-5 py-2.5 rounded-lg text-sm transition-colors whitespace-nowrap flex items-center gap-2"
-          >
-            {aiGenerating ? (
-              <>
-                <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
-                </svg>
-                生成中...
-              </>
-            ) : "✨ 下書きを生成"}
+
+        {/* モード切替 */}
+        <div className="flex gap-2 mb-4">
+          <button type="button" onClick={() => setAiMode("keyword")}
+            className={`px-4 py-1.5 rounded-full text-xs font-bold transition-colors border ${aiMode === "keyword" ? "bg-purple-600 text-white border-transparent" : "border-dark-border text-gray-400 hover:border-purple-500"}`}>
+            📝 キーワードから生成
+          </button>
+          <button type="button" onClick={() => setAiMode("store")}
+            className={`px-4 py-1.5 rounded-full text-xs font-bold transition-colors border ${aiMode === "store" ? "bg-purple-600 text-white border-transparent" : "border-dark-border text-gray-400 hover:border-purple-500"}`}>
+            🏪 店舗の体験談を生成
           </button>
         </div>
+
+        {aiMode === "keyword" ? (
+          <>
+            <p className="text-gray-400 text-xs mb-4">記事テーマを入力するとAIがSEO対策済みの下書きを生成します。</p>
+            <div className="flex gap-3 flex-wrap">
+              <input
+                type="text"
+                value={aiKeyword}
+                onChange={(e) => setAiKeyword(e.target.value)}
+                placeholder="例：浜松フィリピンパブの楽しみ方、初めてのスナックガイド"
+                className="flex-1 min-w-0 bg-dark border border-dark-border rounded-lg px-4 py-2.5 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-purple-500"
+                onKeyDown={(e) => { if (e.key === "Enter") handleAiGenerate(); }}
+              />
+              <select
+                value={aiArea}
+                onChange={(e) => setAiArea(e.target.value)}
+                className="bg-dark border border-dark-border rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-purple-500 shrink-0"
+              >
+                <option value="">全国向け</option>
+                {ALL_AREAS.map(({ pref, areas }) => (
+                  <optgroup key={pref} label={pref}>
+                    <option value={pref}>{pref}</option>
+                    {areas.map((a) => <option key={a} value={a}>{a}</option>)}
+                  </optgroup>
+                ))}
+              </select>
+              <button onClick={handleAiGenerate} disabled={aiGenerating}
+                className="bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white font-bold px-5 py-2.5 rounded-lg text-sm transition-colors whitespace-nowrap flex items-center gap-2">
+                {aiGenerating ? (<><svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/></svg>生成中...</>) : "✨ 下書きを生成"}
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            <p className="text-gray-400 text-xs mb-4">登録済み店舗の情報をもとに「行ってみた」体験談記事を生成します。店舗への内部リンクも自動挿入されます。</p>
+            <div className="flex gap-3 flex-wrap">
+              <select
+                value={selectedStoreSlug}
+                onChange={(e) => setSelectedStoreSlug(e.target.value)}
+                className="flex-1 min-w-0 bg-dark border border-dark-border rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-purple-500"
+              >
+                <option value="">店舗を選択してください</option>
+                {stores.map((s) => (
+                  <option key={s.slug} value={s.slug}>
+                    {s.name}（{s.area}・{s.category}）
+                  </option>
+                ))}
+              </select>
+              <button onClick={handleStoreGenerate} disabled={storeGenerating || !selectedStoreSlug}
+                className="bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white font-bold px-5 py-2.5 rounded-lg text-sm transition-colors whitespace-nowrap flex items-center gap-2">
+                {storeGenerating ? (<><svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/></svg>生成中...</>) : "✨ 体験談を生成"}
+              </button>
+            </div>
+          </>
+        )}
+
         {aiError && (
           <p className="text-red-400 text-xs mt-3">{aiError}</p>
         )}
