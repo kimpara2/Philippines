@@ -190,6 +190,9 @@ export default function AdminStoreEditPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [store, setStore] = useState<StoreData | null>(null);
+  const [scrapeUrl, setScrapeUrl] = useState("");
+  const [scraping, setScraping] = useState(false);
+  const [scrapeMsg, setScrapeMsg] = useState("");
 
   const [form, setForm] = useState({
     name: "",
@@ -257,6 +260,48 @@ export default function AdminStoreEditPage() {
 
   function set(key: string, value: string | boolean) {
     setForm((prev) => ({ ...prev, [key]: value }));
+  }
+
+  async function handleScrape() {
+    if (!scrapeUrl.trim()) return;
+    setScraping(true);
+    setScrapeMsg("");
+    try {
+      const res = await fetch("/api/admin/scrape-store", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: scrapeUrl }),
+      });
+      const json = await res.json();
+      if (!res.ok) { setScrapeMsg("❌ " + (json.error ?? "取得失敗")); return; }
+      const d = json.data;
+      setForm((prev) => ({
+        ...prev,
+        name: d.name ?? prev.name,
+        name_kana: d.name_kana ?? prev.name_kana,
+        area: d.area ?? prev.area,
+        category: d.category ?? prev.category,
+        address: d.address ?? prev.address,
+        nearest_station: d.nearest_station ?? prev.nearest_station,
+        phone: d.phone ?? prev.phone,
+        open_hours: d.open_hours ?? prev.open_hours,
+        regular_holiday: d.regular_holiday ?? prev.regular_holiday,
+        min_price: d.min_price?.toString() ?? prev.min_price,
+        max_price: d.max_price?.toString() ?? prev.max_price,
+        price_system: d.price_system ?? prev.price_system,
+        first_visit_budget: d.first_visit_budget ?? prev.first_visit_budget,
+        description: d.description ?? prev.description,
+        website_url: d.website_url ?? prev.website_url,
+        twitter_url: d.twitter_url ?? prev.twitter_url,
+        instagram_url: d.instagram_url ?? prev.instagram_url,
+        tiktok_url: d.tiktok_url ?? prev.tiktok_url,
+      }));
+      setScrapeMsg("✅ 情報を自動入力しました。内容を確認してください。");
+    } catch {
+      setScrapeMsg("❌ 通信エラーが発生しました");
+    } finally {
+      setScraping(false);
+    }
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -354,6 +399,33 @@ export default function AdminStoreEditPage() {
           aspectClass="aspect-square max-w-[200px]"
           onUploaded={(url) => setStore((prev) => prev ? { ...prev, logo_url: url } : prev)}
         />
+      </div>
+
+      {/* URLから自動入力 */}
+      <div className="bg-primary/10 border border-primary/40 rounded-xl p-4 mb-2">
+        <p className="text-primary font-bold text-sm mb-3">🤖 URLから自動入力（ポケパラ・ショコラ・スナックナビなど）</p>
+        <div className="flex gap-2">
+          <input
+            type="url"
+            value={scrapeUrl}
+            onChange={(e) => setScrapeUrl(e.target.value)}
+            placeholder="https://www.pokepara.com/shop/..."
+            className="flex-1 bg-dark border border-dark-border rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-primary text-sm"
+          />
+          <button
+            type="button"
+            onClick={handleScrape}
+            disabled={scraping || !scrapeUrl.trim()}
+            className="shrink-0 bg-primary hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold px-5 py-2.5 rounded-lg text-sm transition-colors"
+          >
+            {scraping ? "取得中..." : "自動入力"}
+          </button>
+        </div>
+        {scrapeMsg && (
+          <p className={`mt-2 text-sm ${scrapeMsg.startsWith("✅") ? "text-green-400" : "text-red-400"}`}>
+            {scrapeMsg}
+          </p>
+        )}
       </div>
 
       {/* 店舗情報編集フォーム */}
