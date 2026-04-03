@@ -48,6 +48,11 @@ export default async function AdminPage() {
           <div className="text-white font-bold group-hover:text-primary">AI店舗インポート</div>
           <div className="text-gray-400 text-sm">Google Placesから未登録店舗を自動追加</div>
         </Link>
+        <Link href="/admin/contacts" className="bg-dark-card border border-dark-border hover:border-primary rounded-xl p-5 transition-all group">
+          <div className="text-2xl mb-2">📩</div>
+          <div className="text-white font-bold group-hover:text-primary">お問い合わせ管理</div>
+          <div className="text-gray-400 text-sm">受信した問い合わせの確認・返信</div>
+        </Link>
         <Link href="/admin/users" className="bg-dark-card border border-dark-border hover:border-primary rounded-xl p-5 transition-all group">
           <div className="text-2xl mb-2">👥</div>
           <div className="text-white font-bold group-hover:text-primary">ユーザー管理</div>

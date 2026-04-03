@@ -59,6 +59,11 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/contact" className="text-gray-400 hover:text-primary text-sm transition-colors">
+                  📩 お問い合わせ
+                </Link>
+              </li>
+              <li>
                 <Link href="/auth/login" className="text-gray-400 hover:text-primary text-sm transition-colors">
                   🔑 ログイン
                 </Link>
@@ -84,6 +89,8 @@ export function Footer() {
             <Link href="/terms" className="hover:text-gray-400 transition-colors">利用規約</Link>
             <span>|</span>
             <Link href="/faq" className="hover:text-gray-400 transition-colors">よくある質問</Link>
+            <span>|</span>
+            <Link href="/contact" className="hover:text-gray-400 transition-colors">お問い合わせ</Link>
           </div>
           <div className="text-center text-gray-500 text-xs">
             © 2026 東海NIGHT All rights reserved.
