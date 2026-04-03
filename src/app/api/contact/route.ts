@@ -1,9 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
-import { Resend } from "resend";
-
-const resend = new Resend(process.env.RESEND_API_KEY);
-const ADMIN_EMAIL = process.env.CONTACT_TO_EMAIL ?? "";
 
 export async function POST(req: Request) {
   const { name, email, subject, body } = await req.json();
@@ -17,10 +13,14 @@ export async function POST(req: Request) {
   await supabase.from("contact_messages").insert({ name, email, subject, body });
 
   // メール送信（APIキーがある場合のみ）
-  if (process.env.RESEND_API_KEY && ADMIN_EMAIL) {
+  const resendApiKey = process.env.RESEND_API_KEY;
+  const adminEmail = process.env.CONTACT_TO_EMAIL ?? "";
+  if (resendApiKey && adminEmail) {
+    const { Resend } = await import("resend");
+    const resend = new Resend(resendApiKey);
     await resend.emails.send({
       from: "東海NIGHT <noreply@tokai-night.com>",
-      to: ADMIN_EMAIL,
+      to: adminEmail,
       replyTo: email,
       subject: `【お問い合わせ】${subject}`,
       text: `東海NIGHTにお問い合わせがありました。
