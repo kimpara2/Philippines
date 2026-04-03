@@ -49,10 +49,9 @@ export function BulkStoreActions({ stores }: { stores: Store[] }) {
     const { error } = await supabase.from("stores").update({
       is_approved: true,
       is_published: true,
-      approved_at: new Date().toISOString(),
     }).in("id", ids);
     setLoading(false);
-    if (error) { setMsg("❌ エラーが発生しました"); return; }
+    if (error) { setMsg("❌ エラー: " + error.message); return; }
     setMsg(`✅ ${ids.length}件を承認・公開しました`);
     setSelectedIds(new Set());
     router.refresh();
