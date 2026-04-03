@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { StoreApprovalClient } from "@/components/admin/StoreApprovalClient";
+import { BulkStoreActions } from "@/components/admin/BulkStoreActions";
 import Link from "next/link";
 import type { Metadata } from "next";
 
@@ -42,6 +43,16 @@ export default async function AdminStoresPage() {
           ＋ 新規店舗を追加
         </Link>
       </div>
+
+      {/* 一括操作 */}
+      <BulkStoreActions stores={(stores ?? []).map((s) => ({
+        id: s.id,
+        name: s.name,
+        area: s.area,
+        is_approved: s.is_approved,
+        is_published: s.is_published,
+        owner_id: s.owner_id,
+      }))} />
 
       {/* 審査待ち */}
       {pending.length > 0 && (
