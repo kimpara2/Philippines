@@ -1,11 +1,10 @@
-// Google Places APIで店舗を検索してDBに自動登録するAPI
+// Google Places APIで店舗を検索してDBに自動登録するAPI（最大60件）
 
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 
 const GOOGLE_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? "";
 
-// カテゴリ → 検索キーワードのマッピング
 const CATEGORY_KEYWORDS: Record<string, string> = {
   フィリピンパブ: "フィリピンパブ",
   スナック: "スナック",
@@ -25,6 +24,18 @@ function generateSlug(name: string): string {
   return (base || "store") + "-" + Date.now();
 }
 
+// Places Text Search APIを呼び出す（ページトークン対応）
+async function fetchPlacesPage(query: string, pageToken?: string): Promise<{ results: any[]; nextPageToken?: string }> {
+  let url = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(query)}&language=ja&key=${GOOGLE_API_KEY}`;
+  if (pageToken) url += `&pagetoken=${encodeURIComponent(pageToken)}`;
+  const res = await fetch(url);
+  const data = await res.json();
+  return {
+    results: data.results ?? [],
+    nextPageToken: data.next_page_token,
+  };
+}
+
 export async function POST(req: Request) {
   const supabase = await createClient();
 
@@ -40,16 +51,28 @@ export async function POST(req: Request) {
   const keyword = CATEGORY_KEYWORDS[category] ?? category;
   const query = `${area} ${keyword}`;
 
-  // Google Places Text Search API
-  const placesUrl = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(query)}&language=ja&key=${GOOGLE_API_KEY}`;
-  const placesRes = await fetch(placesUrl);
-  const placesData = await placesRes.json();
+  // 最大3ページ（60件）取得
+  const allResults: any[] = [];
+  let pageToken: string | undefined = undefined;
 
-  if (!placesData.results || placesData.results.length === 0) {
+  for (let page = 0; page < 3; page++) {
+    // 2ページ目以降はGoogle側のページ生成待ちが必要（約2秒）
+    if (page > 0 && pageToken) {
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+    }
+
+    const { results, nextPageToken } = await fetchPlacesPage(query, pageToken);
+    allResults.push(...results);
+
+    if (!nextPageToken) break;
+    pageToken = nextPageToken;
+  }
+
+  if (allResults.length === 0) {
     return NextResponse.json({ added: 0, skipped: 0, message: "店舗が見つかりませんでした" });
   }
 
-  // 既存店舗の名前・住所を取得して重複チェック用に使用
+  // 既存店舗の重複チェック用データ取得
   const { data: existingStores } = await supabase
     .from("stores")
     .select("name, address");
@@ -60,11 +83,11 @@ export async function POST(req: Request) {
   let skipped = 0;
   const addedStores: string[] = [];
 
-  for (const place of placesData.results) {
+  for (const place of allResults) {
     const name: string = place.name ?? "";
     const address: string = place.formatted_address ?? "";
 
-    // 重複チェック（名前または住所が一致したらスキップ）
+    // 重複チェック
     if (
       existingNames.has(name.trim().toLowerCase()) ||
       (address && existingAddresses.has(address.trim()))
@@ -73,7 +96,7 @@ export async function POST(req: Request) {
       continue;
     }
 
-    // Place Details APIで電話番号・営業時間を取得
+    // Place Details APIで詳細情報取得
     let phone: string | null = null;
     let openHours: string | null = null;
     let website: string | null = null;
@@ -110,13 +133,15 @@ export async function POST(req: Request) {
       added++;
       addedStores.push(name);
       existingNames.add(name.trim().toLowerCase());
+      existingAddresses.add(address.trim());
     }
   }
 
   return NextResponse.json({
     added,
     skipped,
+    total: allResults.length,
     addedStores,
-    message: `${added}件追加、${skipped}件はすでに登録済みのためスキップしました`,
+    message: `${allResults.length}件中 ${added}件追加、${skipped}件はすでに登録済みのためスキップしました`,
   });
 }
