@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 
 type Store = {
@@ -14,7 +13,6 @@ type Store = {
 };
 
 export function BulkStoreActions({ stores }: { stores: Store[] }) {
-  const supabase = createClient();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState("");
@@ -46,12 +44,14 @@ export function BulkStoreActions({ stores }: { stores: Store[] }) {
     setLoading(true);
     setMsg("");
     const ids = Array.from(selectedIds);
-    const { error } = await supabase.from("stores").update({
-      is_approved: true,
-      is_published: true,
-    }).in("id", ids);
+    const res = await fetch("/api/admin/bulk-stores", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "approve_publish", ids }),
+    });
+    const json = await res.json();
     setLoading(false);
-    if (error) { setMsg("❌ エラー: " + error.message); return; }
+    if (!res.ok) { setMsg("❌ エラー: " + (json.error ?? "不明")); return; }
     setMsg(`✅ ${ids.length}件を承認・公開しました`);
     setSelectedIds(new Set());
     router.refresh();
@@ -62,10 +62,15 @@ export function BulkStoreActions({ stores }: { stores: Store[] }) {
     setLoading(true);
     setMsg("");
     const ids = Array.from(selectedIds);
-    const { error } = await supabase.from("stores").delete().in("id", ids);
+    const res = await fetch("/api/admin/bulk-stores", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "delete", ids }),
+    });
+    const json = await res.json();
     setLoading(false);
     setShowDeleteConfirm(false);
-    if (error) { setMsg("❌ エラーが発生しました"); return; }
+    if (!res.ok) { setMsg("❌ エラー: " + (json.error ?? "不明")); return; }
     setMsg(`🗑️ ${ids.length}件を削除しました`);
     setSelectedIds(new Set());
     router.refresh();
