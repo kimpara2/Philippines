@@ -3,14 +3,9 @@
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useCallback } from "react";
 
-const CATEGORIES = [
-  "すべて",
-  "フィリピンパブ",
-  "スナック",
-  "ガールズバー",
-  "キャバクラ",
-  "その他",
-];
+const CATEGORIES = ["フィリピンパブ", "スナック", "ガールズバー", "キャバクラ", "その他"];
+
+const AREAS = ["愛知", "栄", "錦", "大須", "名古屋", "静岡", "浜松", "静岡市", "沼津", "岐阜", "岐阜市", "三重", "四日市"];
 
 export function AdminStoreSearch() {
   const router = useRouter();
@@ -18,6 +13,7 @@ export function AdminStoreSearch() {
   const searchParams = useSearchParams();
   const currentQ = searchParams.get("q") ?? "";
   const currentCategory = searchParams.get("category") ?? "";
+  const currentArea = searchParams.get("area") ?? "";
 
   const update = useCallback(
     (key: string, value: string) => {
@@ -44,23 +40,55 @@ export function AdminStoreSearch() {
       />
 
       {/* カテゴリフィルター */}
-      <div className="flex flex-wrap gap-2">
-        {CATEGORIES.map((cat) => {
-          const active = cat === "すべて" ? !currentCategory : currentCategory === cat;
-          return (
-            <button
-              key={cat}
-              onClick={() => update("category", cat === "すべて" ? "" : cat)}
-              className={`text-xs px-3 py-1.5 rounded-full font-bold transition-colors border ${
-                active
-                  ? "bg-primary border-primary text-white"
-                  : "border-dark-border text-gray-400 hover:border-primary/50 hover:text-white"
-              }`}
-            >
-              {cat}
-            </button>
-          );
-        })}
+      <div className="flex flex-wrap gap-2 items-center">
+        <span className="text-gray-500 text-xs w-12 shrink-0">種別</span>
+        <button
+          onClick={() => update("category", "")}
+          className={`text-xs px-3 py-1.5 rounded-full font-bold transition-colors border ${
+            !currentCategory ? "bg-primary border-primary text-white" : "border-dark-border text-gray-400 hover:border-primary/50 hover:text-white"
+          }`}
+        >
+          すべて
+        </button>
+        {CATEGORIES.map((cat) => (
+          <button
+            key={cat}
+            onClick={() => update("category", currentCategory === cat ? "" : cat)}
+            className={`text-xs px-3 py-1.5 rounded-full font-bold transition-colors border ${
+              currentCategory === cat
+                ? "bg-primary border-primary text-white"
+                : "border-dark-border text-gray-400 hover:border-primary/50 hover:text-white"
+            }`}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
+
+      {/* 地域フィルター */}
+      <div className="flex flex-wrap gap-2 items-center">
+        <span className="text-gray-500 text-xs w-12 shrink-0">地域</span>
+        <button
+          onClick={() => update("area", "")}
+          className={`text-xs px-3 py-1.5 rounded-full font-bold transition-colors border ${
+            !currentArea ? "bg-accent border-accent text-black" : "border-dark-border text-gray-400 hover:border-accent/50 hover:text-white"
+          }`}
+        >
+          すべて
+        </button>
+        {AREAS.map((area) => (
+          <button
+            key={area}
+            onClick={() => update("area", currentArea === area ? "" : area)}
+            className={`text-xs px-3 py-1.5 rounded-full font-bold transition-colors border ${
+              currentArea === area
+                ? "bg-accent border-accent text-black"
+                : "border-dark-border text-gray-400 hover:border-accent/50 hover:text-white"
+            }`}
+          >
+            {area}
+          </button>
+        ))}
       </div>
     </div>
   );

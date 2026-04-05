@@ -13,9 +13,9 @@ export const metadata: Metadata = { title: "店舗管理" };
 export default async function AdminStoresPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; category?: string }>;
+  searchParams: Promise<{ q?: string; category?: string; area?: string }>;
 }) {
-  const { q, category } = await searchParams;
+  const { q, category, area } = await searchParams;
   const supabase = await createClient();
 
   let query = supabase
@@ -29,6 +29,9 @@ export default async function AdminStoresPage({
   }
   if (category) {
     query = query.eq("category", category);
+  }
+  if (area) {
+    query = query.ilike("area", `%${area}%`);
   }
 
   const { data: stores } = await query;
@@ -66,10 +69,12 @@ export default async function AdminStoresPage({
       </Suspense>
 
       {/* 検索結果数 */}
-      {(q || category) && (
+      {(q || category || area) && (
         <p className="text-gray-400 text-sm mb-4">
+          {area && <span className="text-accent font-bold">{area}</span>}
+          {area && category && " × "}
           {category && <span className="text-primary font-bold">{category}</span>}
-          {category && q && " × "}
+          {(area || category) && q && " × "}
           {q && <span className="text-white font-bold">「{q}」</span>}
           {" の検索結果："}
           <span className="text-white font-bold">{totalCount}件</span>
