@@ -3,19 +3,35 @@
 import { createClient } from "@/lib/supabase/server";
 import { StoreApprovalClient } from "@/components/admin/StoreApprovalClient";
 import { BulkStoreActions } from "@/components/admin/BulkStoreActions";
+import { AdminStoreSearch } from "@/components/admin/AdminStoreSearch";
 import Link from "next/link";
+import { Suspense } from "react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "店舗管理" };
 
-export default async function AdminStoresPage() {
+export default async function AdminStoresPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; category?: string }>;
+}) {
+  const { q, category } = await searchParams;
   const supabase = await createClient();
 
-  const { data: stores } = await supabase
+  let query = supabase
     .from("stores")
-    .select("id, slug, name, area, address, phone, open_hours, description, is_published, is_approved, created_at, owner_id")
+    .select("id, slug, name, area, category, address, phone, open_hours, description, is_published, is_approved, created_at, owner_id")
     .order("is_approved", { ascending: true })
     .order("created_at", { ascending: false });
+
+  if (q) {
+    query = query.ilike("name", `%${q}%`);
+  }
+  if (category) {
+    query = query.eq("category", category);
+  }
+
+  const { data: stores } = await query;
 
   // オーナーのメールアドレスを取得
   const ownerIds = (stores ?? []).map((s) => s.owner_id).filter(Boolean);
@@ -25,16 +41,16 @@ export default async function AdminStoresPage() {
       .from("profiles")
       .select("id")
       .in("id", ownerIds);
-    // auth.usersのemailはsupabase admin APIが必要なため、ここではprofile IDのみ使用
     (profiles ?? []).forEach((p) => { emailMap[p.id] = ""; });
   }
 
   const pending = (stores ?? []).filter((s) => !s.is_approved);
   const approved = (stores ?? []).filter((s) => s.is_approved);
+  const totalCount = (stores ?? []).length;
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-black text-white">🏪 店舗管理</h1>
         <Link
           href="/admin/stores/new"
@@ -43,6 +59,22 @@ export default async function AdminStoresPage() {
           ＋ 新規店舗を追加
         </Link>
       </div>
+
+      {/* 検索・フィルター */}
+      <Suspense fallback={null}>
+        <AdminStoreSearch />
+      </Suspense>
+
+      {/* 検索結果数 */}
+      {(q || category) && (
+        <p className="text-gray-400 text-sm mb-4">
+          {category && <span className="text-primary font-bold">{category}</span>}
+          {category && q && " × "}
+          {q && <span className="text-white font-bold">「{q}」</span>}
+          {" の検索結果："}
+          <span className="text-white font-bold">{totalCount}件</span>
+        </p>
+      )}
 
       {/* 一括操作 */}
       <BulkStoreActions stores={(stores ?? []).map((s) => ({
@@ -71,7 +103,9 @@ export default async function AdminStoresPage() {
 
       {/* 承認済み */}
       <div>
-        <h2 className="text-gray-400 font-bold mb-4 text-sm">承認済み ({approved.length}件)</h2>
+        <h2 className="text-gray-400 font-bold mb-4 text-sm">
+          承認済み ({approved.length}件)
+        </h2>
         {approved.length > 0 ? (
           <div className="space-y-3">
             {approved.map((store) => (
@@ -79,7 +113,9 @@ export default async function AdminStoresPage() {
             ))}
           </div>
         ) : (
-          <div className="text-center py-8 text-gray-500 text-sm">承認済みの店舗はありません</div>
+          <div className="text-center py-8 text-gray-500 text-sm">
+            {q || category ? "条件に一致する承認済み店舗はありません" : "承認済みの店舗はありません"}
+          </div>
         )}
       </div>
     </div>

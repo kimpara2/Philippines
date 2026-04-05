@@ -11,6 +11,7 @@ type StoreInfo = {
   slug: string;
   name: string;
   area: string | null;
+  category: string | null;
   address: string | null;
   phone: string | null;
   open_hours: string | null;
@@ -56,6 +57,7 @@ export function StoreApprovalClient({ store }: { store: StoreInfo }) {
         <button onClick={() => setExpanded(!expanded)} className="flex-1 min-w-0 text-left">
           <div className="flex items-center gap-2 flex-wrap">
             <span className="text-white font-bold">{store.name}</span>
+            {store.category && <span className="text-xs px-2 py-0.5 rounded-full bg-purple-900/40 text-purple-300 font-bold">{store.category}</span>}
             {store.area && <span className="text-gray-400 text-sm">📍 {store.area}</span>}
           </div>
           <div className="flex gap-2 mt-1.5">
