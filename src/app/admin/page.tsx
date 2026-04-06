@@ -58,6 +58,11 @@ export default async function AdminPage() {
           <div className="text-white font-bold group-hover:text-primary">ユーザー管理</div>
           <div className="text-gray-400 text-sm">ロール変更・アカウント管理</div>
         </Link>
+        <Link href="/admin/cast" className="bg-dark-card border border-pink-500/30 hover:border-pink-400 rounded-xl p-5 transition-all group">
+          <div className="text-2xl mb-2">💕</div>
+          <div className="text-white font-bold group-hover:text-pink-300">おすすめキャスト管理</div>
+          <div className="text-gray-400 text-sm">TOPページに表示する女の子をピックアップ</div>
+        </Link>
       </div>
     </div>
   );

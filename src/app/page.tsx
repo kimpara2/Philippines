@@ -5,6 +5,7 @@ import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
 import { StoreCard } from "@/components/store/StoreCard";
 import { RecruitBanner } from "@/components/recruit/RecruitBanner";
+import { FeaturedCastSection } from "@/components/cast/FeaturedCastSection";
 import type { Store, CastPreview } from "@/types/database";
 import { getTranslations } from "next-intl/server";
 
@@ -63,6 +64,29 @@ export default async function HomePage() {
     if (!castsByStore[cast.store_id]) castsByStore[cast.store_id] = [];
     castsByStore[cast.store_id].push(cast);
   });
+
+  // おすすめキャストを取得（最大5人）
+  const { data: featuredCastsRaw } = await supabase
+    .from("cast_members")
+    .select(`
+      id, name, age, nationality, profile_image_url, description,
+      stores!inner(slug, name, area, category)
+    `)
+    .eq("is_featured", true)
+    .eq("is_active", true)
+    .eq("stores.is_published", true)
+    .eq("stores.is_approved", true)
+    .order("sort_order")
+    .limit(5);
+
+  type FeaturedCastRaw = {
+    id: string; name: string; age: number | null; nationality: string | null;
+    profile_image_url: string | null; description: string | null;
+    stores: { slug: string; name: string; area: string | null; category: string | null };
+  };
+  const featuredCasts = ((featuredCastsRaw ?? []) as unknown as FeaturedCastRaw[]).map((c) => ({
+    ...c, store: c.stores,
+  }));
 
   // 求人掲載数を取得
   const { count: recruitCount } = await supabase
@@ -204,6 +228,13 @@ export default async function HomePage() {
           ))}
         </div>
       </section>
+
+      {/* おすすめ女子 */}
+      {featuredCasts.length > 0 && (
+        <section className="max-w-6xl mx-auto px-4 pb-12">
+          <FeaturedCastSection casts={featuredCasts} />
+        </section>
+      )}
 
       {/* 新着店舗 */}
       <section className="max-w-6xl mx-auto px-4 pb-16">

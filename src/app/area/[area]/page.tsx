@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { StoreListItem } from "@/components/store/StoreListItem";
 import { RecruitBanner } from "@/components/recruit/RecruitBanner";
+import { FeaturedCastSection, type FeaturedCast } from "@/components/cast/FeaturedCastSection";
 import Link from "next/link";
 import Image from "next/image";
 import type { Metadata } from "next";
@@ -127,6 +128,27 @@ export default async function AreaPage({ params, searchParams }: Props) {
     photosByStore[p.store_id].push(p.url);
   });
 
+  // エリアのおすすめキャストを取得（最大5人）
+  const { data: featuredCastsRaw } = await supabase
+    .from("cast_members")
+    .select(`
+      id, name, age, nationality, profile_image_url, description,
+      stores!inner(slug, name, area, category)
+    `)
+    .eq("is_featured", true)
+    .eq("is_active", true)
+    .in("stores.area", searchAreas)
+    .eq("stores.is_published", true)
+    .eq("stores.is_approved", true)
+    .order("sort_order")
+    .limit(5);
+
+  const featuredCasts: FeaturedCast[] = ((featuredCastsRaw ?? []) as any[]).map((c) => ({
+    id: c.id, name: c.name, age: c.age, nationality: c.nationality,
+    profile_image_url: c.profile_image_url, description: c.description,
+    store: c.stores,
+  }));
+
   // エリア別求人数を取得
   const { count: recruitCount } = await supabase
     .from("stores")
@@ -235,6 +257,13 @@ export default async function AreaPage({ params, searchParams }: Props) {
         <div className="text-center py-20 bg-dark-card rounded-2xl border border-dark-border">
           <div className="text-5xl mb-4">🔍</div>
           <p className="text-gray-400">{decodedArea}エリアの店舗はまだ登録されていません</p>
+        </div>
+      )}
+
+      {/* おすすめ女子 */}
+      {featuredCasts.length > 0 && (
+        <div className="mt-10">
+          <FeaturedCastSection casts={featuredCasts} area={decodedArea} />
         </div>
       )}
 
