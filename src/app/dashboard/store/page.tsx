@@ -62,6 +62,12 @@ export default function DashboardStorePage() {
           instagram_url: store.instagram_url,
           tiktok_url: store.tiktok_url,
           category: store.category,
+          recruit_enabled: store.recruit_enabled ?? false,
+          recruit_title: store.recruit_title,
+          recruit_salary: store.recruit_salary,
+          recruit_hours: store.recruit_hours,
+          recruit_benefits: store.recruit_benefits,
+          recruit_pr: store.recruit_pr,
         })
         .eq("id", store.id);
 
@@ -371,6 +377,77 @@ export default function DashboardStorePage() {
               className="w-full bg-dark border border-dark-border rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-primary"
             />
           </div>
+        </div>
+
+        {/* 採用情報 */}
+        <div className="bg-dark-card border border-dark-border rounded-xl p-6 space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-accent font-bold">💼 採用情報</h2>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <span className="text-gray-400 text-sm">求人を掲載する</span>
+              <input
+                type="checkbox"
+                checked={store.recruit_enabled ?? false}
+                onChange={(e) => setStore({ ...store, recruit_enabled: e.target.checked })}
+                className="w-5 h-5 accent-primary"
+              />
+            </label>
+          </div>
+
+          {store.recruit_enabled && (
+            <div className="space-y-4 pt-2">
+              <div>
+                <label className="text-gray-400 text-sm block mb-1.5">募集職種・タイトル</label>
+                <input
+                  type="text"
+                  value={store.recruit_title ?? ""}
+                  onChange={(e) => setStore({ ...store, recruit_title: e.target.value || null })}
+                  placeholder="例：フィリピンパブ キャスト・ホステス募集"
+                  className="w-full bg-dark border border-dark-border rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-primary"
+                />
+              </div>
+              <div>
+                <label className="text-gray-400 text-sm block mb-1.5">💰 給与・報酬</label>
+                <textarea
+                  value={store.recruit_salary ?? ""}
+                  onChange={(e) => setStore({ ...store, recruit_salary: e.target.value || null })}
+                  placeholder={"例：時給3,000円〜（指名・売上ボーナスあり）\n日払い・週払い対応"}
+                  rows={3}
+                  className="w-full bg-dark border border-dark-border rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-primary resize-y"
+                />
+              </div>
+              <div>
+                <label className="text-gray-400 text-sm block mb-1.5">🕐 勤務時間・シフト</label>
+                <textarea
+                  value={store.recruit_hours ?? ""}
+                  onChange={(e) => setStore({ ...store, recruit_hours: e.target.value || null })}
+                  placeholder={"例：19:00〜翌3:00（週2日〜OK）\n昼間の面接・体験入店できます"}
+                  rows={3}
+                  className="w-full bg-dark border border-dark-border rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-primary resize-y"
+                />
+              </div>
+              <div>
+                <label className="text-gray-400 text-sm block mb-1.5">🎁 待遇・福利厚生</label>
+                <textarea
+                  value={store.recruit_benefits ?? ""}
+                  onChange={(e) => setStore({ ...store, recruit_benefits: e.target.value || null })}
+                  placeholder={"例：交通費支給・寮完備・日払いOK\nまかない有・衣装貸し出しあり"}
+                  rows={3}
+                  className="w-full bg-dark border border-dark-border rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-primary resize-y"
+                />
+              </div>
+              <div>
+                <label className="text-gray-400 text-sm block mb-1.5">✨ お店からのPR・メッセージ</label>
+                <textarea
+                  value={store.recruit_pr ?? ""}
+                  onChange={(e) => setStore({ ...store, recruit_pr: e.target.value || null })}
+                  placeholder="未経験・日本語不問・外国籍OK。アットホームな雰囲気でスタッフも仲良しです！"
+                  rows={4}
+                  className="w-full bg-dark border border-dark-border rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-primary resize-y"
+                />
+              </div>
+            </div>
+          )}
         </div>
 
         <button

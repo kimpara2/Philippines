@@ -21,16 +21,18 @@ export default async function DashboardPage() {
 
   const storeId = myStores?.[0]?.id;
 
-  let castCount = 0, reviewCount = 0, pendingReviewCount = 0;
+  let castCount = 0, reviewCount = 0, pendingReviewCount = 0, newApplicationCount = 0;
   if (storeId) {
-    const [casts, reviews, pendingReviews] = await Promise.all([
+    const [casts, reviews, pendingReviews, newApps] = await Promise.all([
       supabase.from("cast_members").select("id", { count: "exact" }).eq("store_id", storeId).eq("is_active", true),
       supabase.from("reviews").select("id", { count: "exact" }).eq("store_id", storeId).eq("is_approved", true),
       supabase.from("reviews").select("id", { count: "exact" }).eq("store_id", storeId).eq("is_approved", false),
+      supabase.from("applications").select("id", { count: "exact" }).eq("store_id", storeId).eq("is_read", false),
     ]);
     castCount = casts.count ?? 0;
     reviewCount = reviews.count ?? 0;
     pendingReviewCount = pendingReviews.count ?? 0;
+    newApplicationCount = newApps.count ?? 0;
   }
 
   const quickLinks = [
@@ -38,6 +40,7 @@ export default async function DashboardPage() {
     { href: "/dashboard/cast", icon: "👩", label: t("manageCast"), desc: t("manageCastDesc") },
     { href: "/dashboard/reviews", icon: "💬", label: t("manageReviews"), desc: t("manageReviewsDesc") },
     { href: "/dashboard/news", icon: "📢", label: t("postNews"), desc: t("postNewsDesc") },
+    { href: "/dashboard/applications", icon: "💼", label: "採用応募管理", desc: newApplicationCount > 0 ? `新着 ${newApplicationCount}件あります` : "応募者の確認・連絡" },
   ];
 
   return (
@@ -70,7 +73,7 @@ export default async function DashboardPage() {
           </div>
 
           {/* 統計カード */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-5 mb-8">
             <div className="bg-dark-card border border-dark-border rounded-xl p-5 text-center">
               <div className="text-3xl font-black text-primary">{castCount}</div>
               <div className="text-gray-400 text-sm mt-1">{t("activeCast")}</div>
@@ -90,6 +93,15 @@ export default async function DashboardPage() {
                 </Link>
               )}
             </div>
+            <Link href="/dashboard/applications" className="bg-dark-card border border-dark-border rounded-xl p-5 text-center hover:border-primary transition-colors">
+              <div className={`text-3xl font-black ${newApplicationCount > 0 ? "text-primary" : "text-gray-400"}`}>
+                {newApplicationCount}
+              </div>
+              <div className="text-gray-400 text-sm mt-1">新着応募</div>
+              {newApplicationCount > 0 && (
+                <div className="text-primary text-xs mt-1">確認する →</div>
+              )}
+            </Link>
           </div>
 
           {/* クイックリンク */}

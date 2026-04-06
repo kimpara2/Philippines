@@ -256,6 +256,53 @@ export default async function StoreDetailPage({ params }: Props) {
             </div>
           )}
 
+          {/* 採用情報 */}
+          {store.recruit_enabled && (
+            <div className="bg-gradient-to-br from-primary/10 to-accent/10 border border-primary/40 rounded-2xl overflow-hidden">
+              <div className="bg-primary/20 px-6 py-4 flex items-center gap-3">
+                <span className="text-2xl">💼</span>
+                <div>
+                  <div className="text-accent font-black text-lg">採用情報</div>
+                  {store.recruit_title && (
+                    <div className="text-white font-bold text-sm">{store.recruit_title}</div>
+                  )}
+                </div>
+              </div>
+              <div className="px-6 py-5 space-y-4">
+                {store.recruit_salary && (
+                  <div>
+                    <div className="text-gray-400 text-xs mb-1">💰 給与・報酬</div>
+                    <div className="text-white text-sm whitespace-pre-wrap">{store.recruit_salary}</div>
+                  </div>
+                )}
+                {store.recruit_hours && (
+                  <div>
+                    <div className="text-gray-400 text-xs mb-1">🕐 勤務時間・シフト</div>
+                    <div className="text-white text-sm whitespace-pre-wrap">{store.recruit_hours}</div>
+                  </div>
+                )}
+                {store.recruit_benefits && (
+                  <div>
+                    <div className="text-gray-400 text-xs mb-1">🎁 待遇・福利厚生</div>
+                    <div className="text-white text-sm whitespace-pre-wrap">{store.recruit_benefits}</div>
+                  </div>
+                )}
+                {store.recruit_pr && (
+                  <div className="bg-dark/40 rounded-xl p-4">
+                    <div className="text-accent text-xs font-bold mb-1">✨ お店からのメッセージ</div>
+                    <div className="text-gray-200 text-sm whitespace-pre-wrap">{store.recruit_pr}</div>
+                  </div>
+                )}
+                <Link
+                  href={`/stores/${slug}/apply`}
+                  className="block w-full text-center bg-primary hover:bg-primary-hover text-white font-black py-4 rounded-xl text-lg transition-colors mt-2"
+                >
+                  📩 採用に応募する
+                </Link>
+              </div>
+            </div>
+          )}
+
           {/* 口コミ */}
           <div>
             <div className="flex items-center justify-between mb-4">

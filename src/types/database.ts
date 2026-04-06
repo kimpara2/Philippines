@@ -37,6 +37,12 @@ export type Store = {
   max_price: number | null;
   price_system: string | null;
   first_visit_budget: string | null;
+  recruit_enabled: boolean;
+  recruit_title: string | null;
+  recruit_salary: string | null;
+  recruit_hours: string | null;
+  recruit_benefits: string | null;
+  recruit_pr: string | null;
   is_published: boolean;
   is_approved: boolean;
   owner_id: string | null;
@@ -129,6 +135,19 @@ export type StoreStaff = {
 // 口コミ + 投稿者情報
 export type ReviewWithProfile = Review & {
   profiles: Pick<Profile, "display_name" | "avatar_url"> | null;
+};
+
+// 求人応募
+export type Application = {
+  id: string;
+  store_id: string;
+  name: string;
+  age: string | null;
+  phone: string;
+  email: string | null;
+  message: string | null;
+  is_read: boolean;
+  created_at: string;
 };
 
 // 店舗カード用キャストプレビュー
