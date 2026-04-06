@@ -79,6 +79,9 @@ export function Header() {
           <Link href="/blog" className="block text-gray-300 hover:text-primary py-2" onClick={() => setMenuOpen(false)}>
             {t("column")}
           </Link>
+          <Link href="/recruit" className="block text-pink-300 hover:text-pink-200 py-2 font-bold" onClick={() => setMenuOpen(false)}>
+            💼 求人情報
+          </Link>
           <hr className="border-dark-border" />
           <Link href="/auth/login" className="block text-gray-300 hover:text-white py-2" onClick={() => setMenuOpen(false)}>
             {t("storeLogin")}

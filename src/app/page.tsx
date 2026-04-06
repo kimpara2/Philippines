@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
 import { StoreCard } from "@/components/store/StoreCard";
+import { RecruitBanner } from "@/components/recruit/RecruitBanner";
 import type { Store, CastPreview } from "@/types/database";
 import { getTranslations } from "next-intl/server";
 
@@ -62,6 +63,14 @@ export default async function HomePage() {
     if (!castsByStore[cast.store_id]) castsByStore[cast.store_id] = [];
     castsByStore[cast.store_id].push(cast);
   });
+
+  // 求人掲載数を取得
+  const { count: recruitCount } = await supabase
+    .from("stores")
+    .select("id", { count: "exact", head: true })
+    .eq("is_published", true)
+    .eq("is_approved", true)
+    .eq("recruit_enabled", true);
 
   const { data: newsRaw } = await supabase
     .from("site_news")
@@ -163,6 +172,11 @@ export default async function HomePage() {
             すべての店舗を見る →
           </Link>
         </div>
+      </section>
+
+      {/* 求人バナー */}
+      <section className="max-w-6xl mx-auto px-4 pb-8">
+        <RecruitBanner count={recruitCount ?? 0} />
       </section>
 
       {/* ジャンルから探す */}

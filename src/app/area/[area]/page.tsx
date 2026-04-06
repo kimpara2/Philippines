@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { StoreListItem } from "@/components/store/StoreListItem";
+import { RecruitBanner } from "@/components/recruit/RecruitBanner";
 import Link from "next/link";
 import Image from "next/image";
 import type { Metadata } from "next";
@@ -126,6 +127,15 @@ export default async function AreaPage({ params, searchParams }: Props) {
     photosByStore[p.store_id].push(p.url);
   });
 
+  // エリア別求人数を取得
+  const { count: recruitCount } = await supabase
+    .from("stores")
+    .select("id", { count: "exact", head: true })
+    .in("area", searchAreas)
+    .eq("is_published", true)
+    .eq("is_approved", true)
+    .eq("recruit_enabled", true);
+
   // エリア別ブログ記事を取得（カテゴリ指定時はタイトルでジャンル絞り込み）
   let newsQuery = supabase
     .from("site_news")
@@ -227,6 +237,11 @@ export default async function AreaPage({ params, searchParams }: Props) {
           <p className="text-gray-400">{decodedArea}エリアの店舗はまだ登録されていません</p>
         </div>
       )}
+
+      {/* 求人バナー */}
+      <div className="mt-10">
+        <RecruitBanner area={decodedArea} count={recruitCount ?? 0} />
+      </div>
 
       {/* エリア別ブログ記事 */}
       {areaNews && areaNews.length > 0 && (
