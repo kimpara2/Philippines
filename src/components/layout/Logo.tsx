@@ -1,67 +1,82 @@
 export function Logo() {
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 240 48"
-      fill="none"
-      className="h-10 w-auto"
-      aria-label="東海NIGHT"
-    >
-      {/* ── アイコン背景 ── */}
-      <rect x="1" y="1" width="46" height="46" rx="10" fill="#1e1b4b" />
-
-      {/* ── 建物シルエット ── */}
-      <rect x="7" y="28" width="7" height="18" rx="1" fill="white" fillOpacity="0.85" />
-      <rect x="16" y="22" width="8" height="24" rx="1" fill="white" fillOpacity="0.9" />
-      <rect x="26" y="30" width="6" height="16" rx="1" fill="white" fillOpacity="0.8" />
-      <rect x="34" y="34" width="6" height="12" rx="1" fill="white" fillOpacity="0.75" />
-
-      {/* ── 三日月 ── */}
-      <circle cx="20" cy="13" r="7" fill="#f59e0b" />
-      <circle cx="24" cy="10" r="6.5" fill="#1e1b4b" />
-
-      {/* ── 星 ── */}
-      <circle cx="35" cy="11" r="1.5" fill="#f59e0b" fillOpacity="0.9" />
-      <circle cx="10" cy="18" r="1" fill="white" fillOpacity="0.7" />
-      <circle cx="30" cy="17" r="0.8" fill="white" fillOpacity="0.8" />
-
-      {/* ── メインテキスト ── */}
-      {/* 東海（白） */}
-      <text
-        x="58"
-        y="35"
-        fontFamily="'Noto Sans JP', sans-serif"
-        fontSize="25"
-        fontWeight="900"
-        fill="white"
+    <div className="flex items-center gap-3 select-none">
+      {/* ── アイコンマーク ── */}
+      <svg
+        viewBox="0 0 48 48"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className="h-10 w-10 shrink-0"
+        aria-hidden="true"
       >
-        東海
-      </text>
-      {/* NIGHT（アンバーゴールド） */}
-      <text
-        x="112"
-        y="35"
-        fontFamily="'Arial Black', Arial, sans-serif"
-        fontSize="25"
-        fontWeight="900"
-        fill="#f59e0b"
-        letterSpacing="1"
-      >
-        NIGHT
-      </text>
+        <defs>
+          <linearGradient id="tn-bg" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="#1a0a38" />
+            <stop offset="100%" stopColor="#090f2a" />
+          </linearGradient>
+          <radialGradient id="tn-moon-glow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#fcd34d" stopOpacity="0.35" />
+            <stop offset="100%" stopColor="#f59e0b" stopOpacity="0" />
+          </radialGradient>
+        </defs>
 
-      {/* ── サブテキスト ── */}
-      <text
-        x="58"
-        y="47"
-        fontFamily="Arial, sans-serif"
-        fontSize="8.5"
-        fontWeight="500"
-        fill="#94a3b8"
-        letterSpacing="2"
-      >
-        TOKAI-NIGHT.COM
-      </text>
-    </svg>
+        {/* 背景 */}
+        <rect width="48" height="48" rx="11" fill="url(#tn-bg)" />
+
+        {/* 月のグロー */}
+        <circle cx="26" cy="14" r="12" fill="url(#tn-moon-glow)" />
+
+        {/* 三日月（アンバー） */}
+        <circle cx="26" cy="14" r="9" fill="#f59e0b" />
+        {/* 月を切り抜く円（背景色と同色） */}
+        <circle cx="30" cy="11" r="8" fill="#120826" />
+
+        {/* 星 */}
+        <circle cx="9"  cy="11" r="1.3" fill="#f59e0b" fillOpacity="0.75" />
+        <circle cx="39" cy="9"  r="1.0" fill="white"   fillOpacity="0.55" />
+        <circle cx="6"  cy="20" r="0.8" fill="white"   fillOpacity="0.4"  />
+        <circle cx="43" cy="18" r="0.7" fill="#f59e0b" fillOpacity="0.5"  />
+
+        {/* 都市シルエット */}
+        <rect x="2"  y="31" width="6"  height="17" rx="1.5" fill="white" fillOpacity="0.88" />
+        <rect x="10" y="25" width="8"  height="23" rx="1.5" fill="white" fillOpacity="0.96" />
+        <rect x="20" y="33" width="5"  height="15" rx="1.5" fill="white" fillOpacity="0.78" />
+        <rect x="27" y="27" width="7"  height="21" rx="1.5" fill="white" fillOpacity="0.92" />
+        <rect x="36" y="34" width="6"  height="14" rx="1.5" fill="white" fillOpacity="0.72" />
+
+        {/* 窓のアクセント（点灯） */}
+        <rect x="13" y="29" width="2" height="2" rx="0.5" fill="#fcd34d" fillOpacity="0.8" />
+        <rect x="13" y="33" width="2" height="2" rx="0.5" fill="#fcd34d" fillOpacity="0.5" />
+        <rect x="29" y="31" width="2" height="2" rx="0.5" fill="#fcd34d" fillOpacity="0.7" />
+        <rect x="4"  y="34" width="2" height="2" rx="0.5" fill="#fcd34d" fillOpacity="0.45" />
+
+        {/* 地平線ライン */}
+        <line x1="0" y1="47.5" x2="48" y2="47.5" stroke="white" strokeOpacity="0.12" strokeWidth="1" />
+      </svg>
+
+      {/* ── テキスト（HTML/CSSで本来のフォントを使用） ── */}
+      <div className="flex flex-col leading-none">
+        <div className="flex items-baseline">
+          <span
+            className="text-white font-black tracking-tight"
+            style={{ fontSize: "1.45rem", lineHeight: 1 }}
+          >
+            東海
+          </span>
+          <span
+            className="text-amber-400 font-black tracking-widest"
+            style={{ fontSize: "1.45rem", lineHeight: 1, letterSpacing: "0.06em" }}
+          >
+            NIGHT
+          </span>
+        </div>
+        <span
+          className="text-slate-500 font-semibold"
+          style={{ fontSize: "0.48rem", letterSpacing: "0.22em", marginTop: "4px" }}
+        >
+          TOKAI-NIGHT.COM
+        </span>
+      </div>
+    </div>
   );
 }
