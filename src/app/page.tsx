@@ -133,7 +133,7 @@ export default async function HomePage() {
     <div>
       {/* ヒーローセクション */}
       <section className="relative w-full overflow-hidden">
-        {/* 画像：比率を保って縮小、下に検索バー */}
+        {/* 画像：比率を保って縮小 */}
         <Image
           src="/hero.png"
           alt="東海NIGHT ヒーロー背景"
@@ -144,15 +144,15 @@ export default async function HomePage() {
           unoptimized
         />
 
-        {/* 検索バー */}
-        <div className="bg-[#05010f] py-4 px-4">
+        {/* 検索バー（画像下部に絶対配置） */}
+        <div className="absolute bottom-[6%] left-0 right-0 px-4">
           <form action="/search" method="get" className="flex gap-2 max-w-lg mx-auto">
             <div className="flex-1">
               <input
                 type="text"
                 name="q"
                 placeholder={t("searchPlaceholder")}
-                className="w-full bg-black/70 border border-purple-400/60 rounded-full px-4 py-2.5 text-white placeholder-purple-300/60 focus:outline-none focus:border-pink-400 transition-all text-sm"
+                className="w-full bg-black/60 backdrop-blur-md border border-purple-400/60 rounded-full px-4 py-2.5 text-white placeholder-purple-300/60 focus:outline-none focus:border-pink-400 transition-all text-sm"
                 style={{ boxShadow: "0 0 8px rgba(168,85,247,0.4)" }}
               />
             </div>
