@@ -146,26 +146,27 @@ export default async function HomePage() {
 
         {/* 検索バー（画像下部に絶対配置） */}
         <div className="absolute bottom-[6%] left-0 right-0 px-4">
-          <form action="/search" method="get" className="flex gap-2 max-w-lg mx-auto">
-            <div className="flex-1">
+          <form action="/search" method="get" className="w-[62%] sm:max-w-xs mx-auto">
+            <div
+              className="flex items-center gap-3 bg-black/70 backdrop-blur-md rounded-full px-5 py-3 transition-all"
+              style={{
+                border: "1.5px solid rgba(168,85,247,0.7)",
+                boxShadow: "0 0 16px rgba(168,85,247,0.55), 0 0 40px rgba(168,85,247,0.2)",
+              }}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(168,85,247,0.9)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
+                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+              </svg>
               <input
                 type="text"
                 name="q"
                 placeholder={t("searchPlaceholder")}
-                className="w-full bg-black/60 backdrop-blur-md border border-purple-400/60 rounded-full px-4 py-2.5 text-white placeholder-purple-300/60 focus:outline-none focus:border-pink-400 transition-all text-sm"
-                style={{ boxShadow: "0 0 8px rgba(168,85,247,0.4)" }}
+                className="flex-1 bg-transparent text-white placeholder-purple-300/60 focus:outline-none text-sm"
               />
+              <button type="submit" className="hidden sm:block shrink-0 text-purple-300/70 hover:text-white transition-colors text-xs font-bold tracking-wide">
+                {t("searchButton")}
+              </button>
             </div>
-            <button
-              type="submit"
-              className="text-white font-black px-5 py-2.5 rounded-full text-sm transition-all hover:scale-105 shrink-0"
-              style={{
-                background: "linear-gradient(135deg, #a855f7, #ec4899)",
-                boxShadow: "0 0 14px rgba(168,85,247,0.7)",
-              }}
-            >
-              {t("searchButton")}
-            </button>
           </form>
         </div>
       </section>
