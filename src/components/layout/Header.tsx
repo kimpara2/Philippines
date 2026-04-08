@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { Logo } from "./Logo";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { useTranslations } from "next-intl";
+import { MapPin, Menu, X, Briefcase } from "lucide-react";
 
 export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -47,13 +48,7 @@ export function Header() {
             onClick={() => setMenuOpen(!menuOpen)}
             aria-label={t("menuAriaLabel")}
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              {menuOpen ? (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              )}
-            </svg>
+            {menuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
       </div>
@@ -64,23 +59,23 @@ export function Header() {
           <Link href="/stores" className="block text-gray-300 hover:text-primary py-2" onClick={() => setMenuOpen(false)}>
             {t("storeList")}
           </Link>
-          <Link href="/area/愛知" className="block text-gray-300 hover:text-primary py-2" onClick={() => setMenuOpen(false)}>
-            📍 愛知
-          </Link>
-          <Link href="/area/静岡" className="block text-gray-300 hover:text-primary py-2" onClick={() => setMenuOpen(false)}>
-            📍 静岡
-          </Link>
-          <Link href="/area/岐阜" className="block text-gray-300 hover:text-primary py-2" onClick={() => setMenuOpen(false)}>
-            📍 岐阜
-          </Link>
-          <Link href="/area/三重" className="block text-gray-300 hover:text-primary py-2" onClick={() => setMenuOpen(false)}>
-            📍 三重
-          </Link>
+          {[
+            { href: "/area/愛知", label: "愛知" },
+            { href: "/area/静岡", label: "静岡" },
+            { href: "/area/岐阜", label: "岐阜" },
+            { href: "/area/三重", label: "三重" },
+          ].map(({ href, label }) => (
+            <Link key={href} href={href} className="flex items-center gap-2 text-gray-300 hover:text-primary py-2" onClick={() => setMenuOpen(false)}>
+              <MapPin size={14} className="shrink-0" />
+              {label}
+            </Link>
+          ))}
           <Link href="/blog" className="block text-gray-300 hover:text-primary py-2" onClick={() => setMenuOpen(false)}>
             {t("column")}
           </Link>
-          <Link href="/recruit" className="block text-pink-300 hover:text-pink-200 py-2 font-bold" onClick={() => setMenuOpen(false)}>
-            💼 求人情報
+          <Link href="/recruit" className="flex items-center gap-2 text-pink-300 hover:text-pink-200 py-2 font-bold" onClick={() => setMenuOpen(false)}>
+            <Briefcase size={15} className="shrink-0" />
+            求人情報
           </Link>
           <hr className="border-dark-border" />
           <Link href="/auth/login" className="block text-gray-300 hover:text-white py-2" onClick={() => setMenuOpen(false)}>

@@ -8,13 +8,15 @@ import { RecruitBanner } from "@/components/recruit/RecruitBanner";
 import { FeaturedCastSection } from "@/components/cast/FeaturedCastSection";
 import type { Store, CastPreview } from "@/types/database";
 import { getTranslations } from "next-intl/server";
+import { Wine, GlassWater, Gem, Users, Martini, Mountain, Castle, Waves, Map, MapPin } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 // 東海エリア一覧
-const PREFECTURES = [
-  { name: "愛知", icon: "🦐", areas: ["栄", "錦", "大須", "名古屋"] },
-  { name: "静岡", icon: "🗻", areas: ["浜松", "静岡市", "沼津"] },
-  { name: "岐阜", icon: "🏯", areas: ["岐阜市"] },
-  { name: "三重", icon: "🌊", areas: ["四日市"] },
+const PREFECTURES: { name: string; Icon: LucideIcon; areas: string[] }[] = [
+  { name: "愛知", Icon: Map,      areas: ["栄", "錦", "大須", "名古屋"] },
+  { name: "静岡", Icon: Mountain, areas: ["浜松", "静岡市", "沼津"] },
+  { name: "岐阜", Icon: Castle,   areas: ["岐阜市"] },
+  { name: "三重", Icon: Waves,    areas: ["四日市"] },
 ];
 
 type SiteNews = {
@@ -130,11 +132,11 @@ export default async function HomePage() {
     <div>
       {/* ヒーローセクション */}
       <section className="relative bg-gradient-to-br from-slate-900 via-purple-950 to-slate-900 py-20 px-4 text-center overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-10 left-10 text-8xl">🍹</div>
-          <div className="absolute top-20 right-10 text-6xl">✨</div>
-          <div className="absolute bottom-10 left-1/4 text-7xl">🎵</div>
-          <div className="absolute bottom-5 right-1/4 text-5xl">💫</div>
+        <div className="absolute inset-0 opacity-5 pointer-events-none">
+          <Wine className="absolute top-10 left-10 w-24 h-24 text-primary" />
+          <GlassWater className="absolute top-20 right-10 w-16 h-16 text-accent" />
+          <Martini className="absolute bottom-10 left-1/4 w-20 h-20 text-primary" />
+          <Gem className="absolute bottom-5 right-1/4 w-14 h-14 text-accent" />
         </div>
 
         <div className="relative max-w-2xl mx-auto">
@@ -166,19 +168,20 @@ export default async function HomePage() {
       {/* エリアから探す */}
       <section className="max-w-6xl mx-auto px-4 py-12">
         <h2 className="text-xl font-bold text-accent mb-6 flex items-center gap-2">
+          <MapPin size={20} className="text-accent" />
           {t("browseByArea")}
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {PREFECTURES.map((pref) => (
-            <div key={pref.name} className="bg-dark-card border border-dark-border rounded-xl p-4 hover:border-primary transition-all hover:shadow-lg hover:shadow-primary/10">
-              <Link href={`/area/${pref.name}`} className="flex items-center gap-2 mb-3 group">
-                <span className="text-2xl">{pref.icon}</span>
+          {PREFECTURES.map(({ name, Icon, areas }) => (
+            <div key={name} className="bg-dark-card border border-dark-border rounded-xl p-4 hover:border-primary transition-all hover:shadow-lg hover:shadow-primary/10">
+              <Link href={`/area/${name}`} className="flex items-center gap-2 mb-3 group">
+                <Icon size={18} className="text-primary shrink-0" />
                 <span className="text-white font-bold group-hover:text-primary transition-colors">
-                  {pref.name}
+                  {name}
                 </span>
               </Link>
               <div className="flex flex-wrap gap-1.5">
-                {pref.areas.map((area) => (
+                {areas.map((area) => (
                   <Link
                     key={area}
                     href={`/area/${area}`}
@@ -206,22 +209,25 @@ export default async function HomePage() {
       {/* ジャンルから探す */}
       <section className="max-w-6xl mx-auto px-4 pb-12">
         <h2 className="text-xl font-bold text-accent mb-6 flex items-center gap-2">
-          🍸 ジャンルから探す
+          <Martini size={20} />
+          ジャンルから探す
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           {[
-            { name: "フィリピンパブ", icon: "🍹", desc: "フィリピン人キャスト在籍" },
-            { name: "スナック",       icon: "🥃", desc: "ママと気軽に一杯" },
-            { name: "ガールズバー",   icon: "👧", desc: "カジュアルに楽しむ" },
-            { name: "バー",           icon: "🍸", desc: "大人の夜の定番" },
-            { name: "キャバクラ",     icon: "💎", desc: "ラグジュアリーな夜" },
-          ].map(({ name, icon, desc }) => (
+            { name: "フィリピンパブ", Icon: Wine,       desc: "フィリピン人キャスト在籍" },
+            { name: "スナック",       Icon: GlassWater, desc: "ママと気軽に一杯" },
+            { name: "ガールズバー",   Icon: Users,      desc: "カジュアルに楽しむ" },
+            { name: "バー",           Icon: Martini,    desc: "大人の夜の定番" },
+            { name: "キャバクラ",     Icon: Gem,        desc: "ラグジュアリーな夜" },
+          ].map(({ name, Icon, desc }) => (
             <Link
               key={name}
               href={`/stores?category=${encodeURIComponent(name)}`}
               className="bg-dark-card border border-dark-border rounded-xl p-4 hover:border-primary hover:shadow-lg hover:shadow-primary/10 transition-all group text-center"
             >
-              <div className="text-3xl mb-2">{icon}</div>
+              <div className="flex justify-center mb-3">
+                <Icon size={32} className="text-primary group-hover:text-accent transition-colors" />
+              </div>
               <div className="text-white font-bold text-sm group-hover:text-primary transition-colors mb-1">{name}</div>
               <div className="text-gray-500 text-xs">{desc}</div>
             </Link>
@@ -255,7 +261,7 @@ export default async function HomePage() {
           </div>
         ) : (
           <div className="text-center py-16 bg-dark-card rounded-2xl border border-dark-border">
-            <div className="text-5xl mb-4">🍹</div>
+            <div className="flex justify-center mb-4"><Wine size={52} className="text-primary opacity-40" /></div>
             <p className="text-gray-400 text-lg mb-2">{t("noStores")}</p>
             <p className="text-gray-500 text-sm">
               Supabaseを設定して店舗を追加してみましょう！
