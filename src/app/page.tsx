@@ -145,21 +145,14 @@ export default async function HomePage() {
         {/* 暗めのオーバーレイ */}
         <div className="absolute inset-0 bg-black/50" />
 
-        <div className="relative max-w-2xl mx-auto">
-          <h1 className="text-5xl md:text-6xl font-black mb-4 drop-shadow-lg">
-            <span className="text-white">東海</span>
-            <span className="text-accent">NIGHT</span>
-          </h1>
-          <p className="text-gray-200 text-lg mb-8 drop-shadow">
-            {t("heroSub")}
-          </p>
-
-          <form action="/search" method="get" className="flex gap-2 max-w-md mx-auto px-4">
+        {/* 検索バーのみ（テキストは画像に内包） */}
+        <div className="relative max-w-md mx-auto mt-64 md:mt-80">
+          <form action="/search" method="get" className="flex gap-2 px-4">
             <input
               type="text"
               name="q"
               placeholder={t("searchPlaceholder")}
-              className="flex-1 bg-black/50 backdrop-blur border border-white/20 rounded-full px-5 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-primary"
+              className="flex-1 bg-black/60 backdrop-blur border border-white/25 rounded-full px-5 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-primary"
             />
             <button
               type="submit"
