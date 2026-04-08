@@ -9,6 +9,7 @@ import { FeaturedCastSection } from "@/components/cast/FeaturedCastSection";
 import type { Store, CastPreview } from "@/types/database";
 import { getTranslations } from "next-intl/server";
 import { Wine, GlassWater, Gem, Users, Martini, Mountain, Castle, Waves, Map, MapPin } from "lucide-react";
+// Wine/GlassWater/Gem/Martini still used in genre section
 import type { LucideIcon } from "lucide-react";
 
 // 東海エリア一覧
@@ -131,20 +132,25 @@ export default async function HomePage() {
       />
     <div>
       {/* ヒーローセクション */}
-      <section className="relative bg-gradient-to-br from-slate-900 via-purple-950 to-slate-900 py-20 px-4 text-center overflow-hidden">
-        <div className="absolute inset-0 opacity-5 pointer-events-none">
-          <Wine className="absolute top-10 left-10 w-24 h-24 text-primary" />
-          <GlassWater className="absolute top-20 right-10 w-16 h-16 text-accent" />
-          <Martini className="absolute bottom-10 left-1/4 w-20 h-20 text-primary" />
-          <Gem className="absolute bottom-5 right-1/4 w-14 h-14 text-accent" />
-        </div>
+      <section className="relative py-24 px-4 text-center overflow-hidden">
+        {/* 背景画像 */}
+        <Image
+          src="/hero.png"
+          alt="東海NIGHT ヒーロー背景"
+          fill
+          className="object-cover object-center"
+          priority
+          unoptimized
+        />
+        {/* 暗めのオーバーレイ */}
+        <div className="absolute inset-0 bg-black/50" />
 
         <div className="relative max-w-2xl mx-auto">
-          <h1 className="text-5xl md:text-6xl font-black mb-4">
+          <h1 className="text-5xl md:text-6xl font-black mb-4 drop-shadow-lg">
             <span className="text-white">東海</span>
             <span className="text-accent">NIGHT</span>
           </h1>
-          <p className="text-gray-300 text-lg mb-8">
+          <p className="text-gray-200 text-lg mb-8 drop-shadow">
             {t("heroSub")}
           </p>
 
@@ -153,7 +159,7 @@ export default async function HomePage() {
               type="text"
               name="q"
               placeholder={t("searchPlaceholder")}
-              className="flex-1 bg-dark-card border border-dark-border rounded-full px-5 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-primary"
+              className="flex-1 bg-black/50 backdrop-blur border border-white/20 rounded-full px-5 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-primary"
             />
             <button
               type="submit"
