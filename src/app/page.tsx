@@ -146,7 +146,7 @@ export default async function HomePage() {
 
         {/* 検索バー（画像下部に絶対配置） */}
         <div className="absolute bottom-[6%] left-0 right-0 px-4">
-          <form action="/search" method="get" className="w-[62%] sm:max-w-xs mx-auto">
+          <form action="/search" method="get" className="w-[48%] sm:max-w-xs mx-auto">
             <div
               className="flex items-center gap-3 bg-black/70 backdrop-blur-md rounded-full px-5 py-3 transition-all"
               style={{
@@ -160,7 +160,7 @@ export default async function HomePage() {
               <input
                 type="text"
                 name="q"
-                placeholder={t("searchPlaceholder")}
+                placeholder="店舗を探す"
                 className="flex-1 bg-transparent text-white placeholder-purple-300/60 focus:outline-none text-sm"
               />
               <button type="submit" className="hidden sm:block shrink-0 text-purple-300/70 hover:text-white transition-colors text-xs font-bold tracking-wide">
