@@ -132,36 +132,36 @@ export default async function HomePage() {
       />
     <div>
       {/* ヒーローセクション */}
-      <section className="relative py-24 px-4 text-center overflow-hidden">
-        {/* 背景画像 */}
+      <section className="relative w-full overflow-hidden">
+        {/* 画像：比率を保って縮小、下に検索バー */}
         <Image
           src="/hero.png"
           alt="東海NIGHT ヒーロー背景"
-          fill
-          className="object-cover object-center"
+          width={1920}
+          height={835}
+          className="w-full h-auto block"
           priority
           unoptimized
         />
-        {/* オーバーレイなし */}
 
-        {/* 検索バー（ネオン風） */}
-        <div className="relative max-w-lg mx-auto mt-64 md:mt-80 px-4">
-          <form action="/search" method="get" className="flex gap-2">
-            <div className="flex-1 relative">
+        {/* 検索バー */}
+        <div className="bg-[#05010f] py-4 px-4">
+          <form action="/search" method="get" className="flex gap-2 max-w-lg mx-auto">
+            <div className="flex-1">
               <input
                 type="text"
                 name="q"
                 placeholder={t("searchPlaceholder")}
-                className="w-full bg-black/70 backdrop-blur-md border border-purple-400/60 rounded-full px-5 py-3.5 text-white placeholder-purple-300/60 focus:outline-none focus:border-pink-400 focus:shadow-[0_0_12px_rgba(236,72,153,0.5)] transition-all text-sm"
-                style={{ boxShadow: "0 0 8px rgba(168,85,247,0.4), inset 0 0 12px rgba(0,0,0,0.3)" }}
+                className="w-full bg-black/70 border border-purple-400/60 rounded-full px-4 py-2.5 text-white placeholder-purple-300/60 focus:outline-none focus:border-pink-400 transition-all text-sm"
+                style={{ boxShadow: "0 0 8px rgba(168,85,247,0.4)" }}
               />
             </div>
             <button
               type="submit"
-              className="text-white font-black px-6 py-3.5 rounded-full text-sm transition-all hover:scale-105"
+              className="text-white font-black px-5 py-2.5 rounded-full text-sm transition-all hover:scale-105 shrink-0"
               style={{
                 background: "linear-gradient(135deg, #a855f7, #ec4899)",
-                boxShadow: "0 0 14px rgba(168,85,247,0.7), 0 0 24px rgba(236,72,153,0.4)",
+                boxShadow: "0 0 14px rgba(168,85,247,0.7)",
               }}
             >
               {t("searchButton")}
