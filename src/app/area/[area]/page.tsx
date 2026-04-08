@@ -34,6 +34,16 @@ const PREFECTURE_AREAS: Record<string, string[]> = {
 
 const CATEGORIES = ["フィリピンパブ", "スナック", "ガールズバー", "バー", "キャバクラ"];
 
+// エリア別SEO紹介文
+const AREA_SEO_TEXT: Record<string, string> = {
+  浜松: "浜松市のフィリピンパブ・スナック・ガールズバー・バー情報を東海NIGHTが厳選してご紹介。浜松駅周辺を中心に、フィリピーナが在籍する本格フィリピンパブ、アットホームなスナック、おしゃれなガールズバーなど多彩な夜遊びスポットが揃っています。浜松でのナイトライフ情報はここでチェック！",
+  名古屋: "名古屋市のフィリピンパブ・スナック・ガールズバー情報をお届け。栄・錦・大須エリアの人気店を厳選掲載中。",
+  静岡市: "静岡市のフィリピンパブ・スナック・ガールズバー情報を掲載。静岡駅周辺の夜遊び情報をまとめてチェック。",
+  沼津: "沼津のフィリピンパブ・スナック・ガールズバー情報を掲載。沼津駅周辺の夜遊びスポットをご紹介。",
+  岐阜市: "岐阜市のフィリピンパブ・スナック・ガールズバー情報を掲載。岐阜駅周辺の夜遊び情報をチェック。",
+  四日市: "四日市のフィリピンパブ・スナック・ガールズバー情報を掲載。三重県四日市の夜遊びスポットをご紹介。",
+};
+
 type Props = {
   params: Promise<{ area: string }>;
   searchParams: Promise<{ category?: string }>;
@@ -62,9 +72,14 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
     ? `${decodedArea}の${category}${count ? `${count}件` : ""}を掲載。営業時間・料金・アクセス情報を東海NIGHTでチェック。`
     : `${decodedArea}のフィリピンパブ・スナック・ガールズバー・バー・キャバクラ${count ? `${count}件` : ""}を掲載。東海NIGHTで${decodedArea}の夜遊び情報を探そう。`;
 
+  const areaKeywords = decodedArea === "浜松"
+    ? ["フィリピンパブ 浜松", "浜松 フィリピンパブ", "浜松市 フィリピンパブ", "浜松 スナック", "浜松 ガールズバー", "浜松 夜遊び", "浜松市 夜遊び"]
+    : [`フィリピンパブ ${decodedArea}`, `${decodedArea} フィリピンパブ`, `${decodedArea} スナック`, `${decodedArea} 夜遊び`];
+
   return {
     title,
     description,
+    keywords: areaKeywords,
     openGraph: {
       title: `${title} | 東海NIGHT`,
       description,
@@ -172,7 +187,7 @@ export default async function AreaPage({ params, searchParams }: Props) {
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "";
   const pageLabel = `${decodedArea}の${category ?? "夜遊びスポット"}`;
-  const jsonLd = JSON.stringify([
+  const jsonLdList = [
     {
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",
@@ -193,7 +208,21 @@ export default async function AreaPage({ params, searchParams }: Props) {
         url: siteUrl + "/stores/" + store.slug,
       })),
     },
-  ]);
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      name: pageLabel + "一覧 | 東海NIGHT",
+      description: `${decodedArea}のフィリピンパブ・スナック・ガールズバー情報を掲載。${stores?.length ?? 0}件掲載中。`,
+      url: siteUrl + "/area/" + area,
+      inLanguage: "ja",
+      about: {
+        "@type": "Place",
+        name: decodedArea,
+        address: { "@type": "PostalAddress", addressRegion: decodedArea, addressCountry: "JP" },
+      },
+    },
+  ];
+  const jsonLd = JSON.stringify(jsonLdList);
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-10">
@@ -215,6 +244,11 @@ export default async function AreaPage({ params, searchParams }: Props) {
             📍 {decodedArea}{category ? `の${category}` : "の夜遊びスポット"}
           </h1>
           <p className="text-gray-400 text-sm">{stores?.length ?? 0}件掲載中</p>
+          {AREA_SEO_TEXT[decodedArea] && !category && (
+            <p className="text-gray-400 text-sm mt-3 leading-relaxed max-w-2xl">
+              {AREA_SEO_TEXT[decodedArea]}
+            </p>
+          )}
         </div>
         <Link
           href={`/ranking/${encodeURIComponent(decodedArea)}`}

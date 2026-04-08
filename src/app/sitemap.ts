@@ -27,10 +27,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
+  // 浜松は最優先エリアとして高優先度
+  const PRIORITY_AREAS = ["浜松"];
   const areaUrls: MetadataRoute.Sitemap = ALL_AREAS.map((area) => ({
     url: `${SITE_URL}/area/${encodeURIComponent(area)}`,
     changeFrequency: "daily",
-    priority: 0.7,
+    priority: PRIORITY_AREAS.includes(area) ? 0.9 : 0.7,
   }));
 
   // エリア × カテゴリの組み合わせURL（13エリア × 5カテゴリ = 65件）
@@ -38,7 +40,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     CATEGORIES.map((category) => ({
       url: `${SITE_URL}/area/${encodeURIComponent(area)}?category=${encodeURIComponent(category)}`,
       changeFrequency: "daily" as const,
-      priority: 0.65,
+      priority: PRIORITY_AREAS.includes(area) ? 0.85 : 0.65,
     }))
   );
 
