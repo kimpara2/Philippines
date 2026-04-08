@@ -142,21 +142,27 @@ export default async function HomePage() {
           priority
           unoptimized
         />
-        {/* 暗めのオーバーレイ */}
-        <div className="absolute inset-0 bg-black/50" />
+        {/* オーバーレイなし */}
 
-        {/* 検索バーのみ（テキストは画像に内包） */}
-        <div className="relative max-w-md mx-auto mt-64 md:mt-80">
-          <form action="/search" method="get" className="flex gap-2 px-4">
-            <input
-              type="text"
-              name="q"
-              placeholder={t("searchPlaceholder")}
-              className="flex-1 bg-black/60 backdrop-blur border border-white/25 rounded-full px-5 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-primary"
-            />
+        {/* 検索バー（ネオン風） */}
+        <div className="relative max-w-lg mx-auto mt-64 md:mt-80 px-4">
+          <form action="/search" method="get" className="flex gap-2">
+            <div className="flex-1 relative">
+              <input
+                type="text"
+                name="q"
+                placeholder={t("searchPlaceholder")}
+                className="w-full bg-black/70 backdrop-blur-md border border-purple-400/60 rounded-full px-5 py-3.5 text-white placeholder-purple-300/60 focus:outline-none focus:border-pink-400 focus:shadow-[0_0_12px_rgba(236,72,153,0.5)] transition-all text-sm"
+                style={{ boxShadow: "0 0 8px rgba(168,85,247,0.4), inset 0 0 12px rgba(0,0,0,0.3)" }}
+              />
+            </div>
             <button
               type="submit"
-              className="bg-primary hover:bg-primary-hover text-white px-6 py-3 rounded-full font-bold transition-colors"
+              className="text-white font-black px-6 py-3.5 rounded-full text-sm transition-all hover:scale-105"
+              style={{
+                background: "linear-gradient(135deg, #a855f7, #ec4899)",
+                boxShadow: "0 0 14px rgba(168,85,247,0.7), 0 0 24px rgba(236,72,153,0.4)",
+              }}
             >
               {t("searchButton")}
             </button>
