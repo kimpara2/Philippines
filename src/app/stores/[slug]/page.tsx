@@ -110,10 +110,18 @@ export default async function StoreDetailPage({ params }: Props) {
       ? `¥${store.min_price.toLocaleString()}〜`
       : null;
 
+  const CATEGORY_SCHEMA_TYPE: Record<string, string> = {
+    フィリピンパブ: "BarOrPub",
+    スナック: "BarOrPub",
+    ガールズバー: "BarOrPub",
+    バー: "Bar",
+    キャバクラ: "NightClub",
+  };
+
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "";
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "BarOrPub",
+    "@type": CATEGORY_SCHEMA_TYPE[store.category ?? ""] ?? "BarOrPub",
     name: store.name,
     description: store.description ?? undefined,
     url: `${siteUrl}/stores/${slug}`,

@@ -28,6 +28,13 @@ export const metadata: Metadata = {
     description: "東海エリアのフィリピンパブ・スナック・ガールズバー・バー・キャバクラ情報を網羅！",
     locale: "ja_JP",
     type: "website",
+    images: [{ url: "/hero.png", width: 1920, height: 835, alt: "東海NIGHT" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "東海NIGHT | 東海の夜遊びガイド",
+    description: "東海エリアのフィリピンパブ・スナック・ガールズバー・バー・キャバクラ情報を網羅！",
+    images: ["/hero.png"],
   },
 };
 

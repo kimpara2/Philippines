@@ -34,7 +34,7 @@ const PREFECTURE_AREAS: Record<string, string[]> = {
 
 const CATEGORIES = ["フィリピンパブ", "スナック", "ガールズバー", "バー", "キャバクラ"];
 
-// エリア別SEO紹介文
+// エリア別SEO紹介文（カテゴリなし）
 const AREA_SEO_TEXT: Record<string, string> = {
   浜松: "浜松市のフィリピンパブ・スナック・ガールズバー・バー情報を東海NIGHTが厳選してご紹介。浜松駅周辺を中心に、フィリピーナが在籍する本格フィリピンパブ、アットホームなスナック、おしゃれなガールズバーなど多彩な夜遊びスポットが揃っています。浜松でのナイトライフ情報はここでチェック！",
   名古屋: "名古屋市のフィリピンパブ・スナック・ガールズバー情報をお届け。栄・錦・大須エリアの人気店を厳選掲載中。",
@@ -42,6 +42,17 @@ const AREA_SEO_TEXT: Record<string, string> = {
   沼津: "沼津のフィリピンパブ・スナック・ガールズバー情報を掲載。沼津駅周辺の夜遊びスポットをご紹介。",
   岐阜市: "岐阜市のフィリピンパブ・スナック・ガールズバー情報を掲載。岐阜駅周辺の夜遊び情報をチェック。",
   四日市: "四日市のフィリピンパブ・スナック・ガールズバー情報を掲載。三重県四日市の夜遊びスポットをご紹介。",
+};
+
+// エリア × カテゴリ別SEO紹介文
+const AREA_CATEGORY_SEO_TEXT: Record<string, Record<string, string>> = {
+  浜松: {
+    フィリピンパブ: "浜松市のフィリピンパブを東海NIGHTで探そう。フィリピーナが在籍する本格フィリピンパブを浜松駅周辺で厳選掲載。料金・営業時間・キャスト情報も確認できます。",
+    スナック: "浜松市のスナックを東海NIGHTで探そう。浜松駅周辺のアットホームなスナックをご紹介。ママや女性スタッフとカラオケや会話が楽しめるお店を掲載中。",
+    ガールズバー: "浜松市のガールズバーを東海NIGHTで探そう。浜松駅周辺のおしゃれなガールズバーを掲載。女の子スタッフと気軽に飲めるお店を探すならここで。",
+    バー: "浜松市のバー情報を東海NIGHTで掲載。浜松駅周辺のおすすめバーをご紹介。",
+    キャバクラ: "浜松市のキャバクラ情報を東海NIGHTで掲載。浜松エリアの人気キャバクラを探すならここで。",
+  },
 };
 
 type Props = {
@@ -241,14 +252,17 @@ export default async function AreaPage({ params, searchParams }: Props) {
       <div className="flex items-start justify-between gap-4 mb-6">
         <div>
           <h1 className="text-2xl font-black text-white mb-2">
-            📍 {decodedArea}{category ? `の${category}` : "の夜遊びスポット"}
+            {decodedArea}{category ? `の${category}` : "の夜遊びスポット"}一覧
           </h1>
           <p className="text-gray-400 text-sm">{stores?.length ?? 0}件掲載中</p>
-          {AREA_SEO_TEXT[decodedArea] && !category && (
-            <p className="text-gray-400 text-sm mt-3 leading-relaxed max-w-2xl">
-              {AREA_SEO_TEXT[decodedArea]}
-            </p>
-          )}
+          {(() => {
+            const catText = category && AREA_CATEGORY_SEO_TEXT[decodedArea]?.[category];
+            const areaText = !category && AREA_SEO_TEXT[decodedArea];
+            const text = catText || areaText;
+            return text ? (
+              <p className="text-gray-400 text-sm mt-3 leading-relaxed max-w-2xl">{text}</p>
+            ) : null;
+          })()}
         </div>
         <Link
           href={`/ranking/${encodeURIComponent(decodedArea)}`}
