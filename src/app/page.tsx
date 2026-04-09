@@ -146,22 +146,22 @@ export default async function HomePage() {
 
         {/* 検索バー（画像下部に絶対配置） */}
         <div className="absolute bottom-[6%] left-0 right-0 px-4">
-          <form action="/search" method="get" className="w-[48%] sm:max-w-xs mx-auto">
+          <form action="/search" method="get" className="w-[52%] sm:max-w-xs mx-auto">
             <div
-              className="flex items-center justify-center gap-3 bg-black/70 backdrop-blur-md rounded-full px-5 py-3 transition-all"
+              className="flex items-center justify-center gap-2 bg-black/70 backdrop-blur-md rounded-full px-3 py-2.5 sm:px-5 sm:py-3 transition-all"
               style={{
                 border: "1.5px solid rgba(168,85,247,0.7)",
                 boxShadow: "0 0 16px rgba(168,85,247,0.55), 0 0 40px rgba(168,85,247,0.2)",
               }}
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(168,85,247,0.9)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(168,85,247,0.9)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 sm:w-[18px] sm:h-[18px]">
                 <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
               </svg>
               <input
                 type="text"
                 name="q"
                 placeholder="店舗を探す"
-                className="flex-1 bg-transparent text-white placeholder-purple-300/60 focus:outline-none text-sm"
+                className="flex-1 min-w-0 bg-transparent text-white placeholder-purple-300/60 focus:outline-none text-xs sm:text-sm"
               />
               <button type="submit" className="hidden sm:block shrink-0 text-purple-300/70 hover:text-white transition-colors text-xs font-bold tracking-wide">
                 {t("searchButton")}
