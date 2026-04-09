@@ -249,21 +249,10 @@ export default async function AreaPage({ params, searchParams }: Props) {
         <span className="text-white">{decodedArea}</span>
       </nav>
 
-      <div className="flex items-start justify-between gap-4 mb-6">
-        <div>
-          <h1 className="text-2xl font-black text-white mb-2">
-            {decodedArea}{category ? `の${category}` : "の夜遊びスポット"}一覧
-          </h1>
-          <p className="text-gray-400 text-sm">{stores?.length ?? 0}件掲載中</p>
-          {(() => {
-            const catText = category && AREA_CATEGORY_SEO_TEXT[decodedArea]?.[category];
-            const areaText = !category && AREA_SEO_TEXT[decodedArea];
-            const text = catText || areaText;
-            return text ? (
-              <p className="text-gray-400 text-sm mt-3 leading-relaxed max-w-2xl">{text}</p>
-            ) : null;
-          })()}
-        </div>
+      <div className="flex items-start justify-between gap-4 mb-2">
+        <h1 className="text-2xl font-black text-white">
+          {decodedArea}{category ? `の${category}` : "の夜遊びスポット"}一覧
+        </h1>
         <Link
           href={`/ranking/${encodeURIComponent(decodedArea)}`}
           className="shrink-0 flex items-center gap-2 bg-yellow-500/10 hover:bg-yellow-500/20 border border-yellow-500/50 text-yellow-400 font-bold text-sm px-4 py-2.5 rounded-xl transition-colors"
@@ -271,6 +260,15 @@ export default async function AreaPage({ params, searchParams }: Props) {
           🏆 ランキングを見る
         </Link>
       </div>
+      <p className="text-gray-400 text-sm mb-2">{stores?.length ?? 0}件掲載中</p>
+      {(() => {
+        const catText = category && AREA_CATEGORY_SEO_TEXT[decodedArea]?.[category];
+        const areaText = !category && AREA_SEO_TEXT[decodedArea];
+        const text = catText || areaText;
+        return text ? (
+          <p className="text-gray-400 text-sm mb-6 leading-relaxed">{text}</p>
+        ) : <div className="mb-6" />;
+      })()}
 
       {/* カテゴリフィルター */}
       <div className="flex flex-wrap gap-2 mb-8">
