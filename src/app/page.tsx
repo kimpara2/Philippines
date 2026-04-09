@@ -148,7 +148,7 @@ export default async function HomePage() {
         <div className="absolute bottom-[6%] left-0 right-0 px-4">
           <form action="/search" method="get" className="w-[48%] sm:max-w-xs mx-auto">
             <div
-              className="flex items-center gap-3 bg-black/70 backdrop-blur-md rounded-full px-5 py-3 transition-all"
+              className="flex items-center justify-center gap-3 bg-black/70 backdrop-blur-md rounded-full px-5 py-3 transition-all"
               style={{
                 border: "1.5px solid rgba(168,85,247,0.7)",
                 boxShadow: "0 0 16px rgba(168,85,247,0.55), 0 0 40px rgba(168,85,247,0.2)",
