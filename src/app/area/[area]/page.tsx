@@ -253,8 +253,11 @@ export default async function AreaPage({ params, searchParams }: Props) {
   const { data: storesRaw } = await storeQuery;
   const allAreaStores = (storesRaw as Store[] | null) ?? [];
   const adminAreaStores = allAreaStores.filter((s) => s.owner_id && adminIdsArea.has(s.owner_id));
-  const otherAreaStores = allAreaStores.filter((s) => !s.owner_id || !adminIdsArea.has(s.owner_id)).sort(() => Math.random() - 0.5);
-  const allStoresSorted = [...adminAreaStores, ...otherAreaStores];
+  const otherAreaStores = allAreaStores.filter((s) => !s.owner_id || !adminIdsArea.has(s.owner_id));
+  // 画像あり優先・画像なしは後ろに（それぞれランダム順）
+  const otherWithImage = otherAreaStores.filter((s) => s.cover_image_url).sort(() => Math.random() - 0.5);
+  const otherNoImage   = otherAreaStores.filter((s) => !s.cover_image_url).sort(() => Math.random() - 0.5);
+  const allStoresSorted = [...adminAreaStores, ...otherWithImage, ...otherNoImage];
   const totalCount = allStoresSorted.length;
   const totalPages = Math.ceil(totalCount / PAGE_SIZE);
   const stores = allStoresSorted.slice(offset, offset + PAGE_SIZE);

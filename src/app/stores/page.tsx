@@ -74,11 +74,13 @@ export default async function StoresPage({ searchParams }: Props) {
   const adminIds = new Set((adminProfiles ?? []).map((p: { id: string }) => p.id));
 
   const { data: storesRaw } = await query;
-  // 管理者の店舗を先頭に、それ以外はランダム順
+  // 管理者の店舗を先頭に、次に画像あり店舗、画像なし店舗は後ろに（それぞれランダム順）
   const allStores = (storesRaw as Store[] | null) ?? [];
   const adminStores = allStores.filter((s) => s.owner_id && adminIds.has(s.owner_id));
-  const otherStores = allStores.filter((s) => !s.owner_id || !adminIds.has(s.owner_id)).sort(() => Math.random() - 0.5);
-  const stores = [...adminStores, ...otherStores];
+  const otherStores = allStores.filter((s) => !s.owner_id || !adminIds.has(s.owner_id));
+  const otherWithImage = otherStores.filter((s) => s.cover_image_url).sort(() => Math.random() - 0.5);
+  const otherNoImage   = otherStores.filter((s) => !s.cover_image_url).sort(() => Math.random() - 0.5);
+  const stores = [...adminStores, ...otherWithImage, ...otherNoImage];
 
   // キャスト写真・店舗写真を取得
   const storeIds = (stores ?? []).map((s) => s.id);
