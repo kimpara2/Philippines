@@ -9,8 +9,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { area } = await params;
   const decodedArea = decodeURIComponent(area);
   return {
-    title: `${decodedArea}のフィリピンパブ ランキングTOP20`,
-    description: `${decodedArea}エリアのフィリピンパブおすすめランキング。厳選TOP20を紹介します。`,
+    title: `${decodedArea}のフィリピンパブ・スナック ランキングTOP20`,
+    description: `${decodedArea}エリアのフィリピンパブ・スナック・ガールズバーおすすめランキング。口コミ評価をもとに厳選TOP20をご紹介。`,
+    keywords: [`${decodedArea} フィリピンパブ ランキング`, `${decodedArea} スナック ランキング`, `${decodedArea} おすすめ 夜遊び`],
+    alternates: {
+      canonical: `${process.env.NEXT_PUBLIC_SITE_URL ?? ""}/ranking/${area}`,
+    },
   };
 }
 
@@ -46,6 +50,32 @@ export default async function RankingAreaPage({ params }: Props) {
 
   const rankings = (rankingsRaw as unknown as RankingRow[]) ?? [];
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "";
+  const jsonLd = JSON.stringify([
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "トップ", item: siteUrl },
+        { "@type": "ListItem", position: 2, name: `${decodedArea}の店舗一覧`, item: `${siteUrl}/area/${area}` },
+        { "@type": "ListItem", position: 3, name: `${decodedArea}のランキング` },
+      ],
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      name: `${decodedArea}のフィリピンパブ・スナックおすすめランキング`,
+      description: `${decodedArea}エリアの夜遊びスポット人気ランキングTOP${rankings.length}`,
+      url: `${siteUrl}/ranking/${area}`,
+      itemListElement: rankings.map(({ rank, store }) => ({
+        "@type": "ListItem",
+        position: rank,
+        name: store.name,
+        url: `${siteUrl}/stores/${store.slug}`,
+      })),
+    },
+  ]);
+
   const rankBadge = (rank: number) => {
     if (rank === 1) return <span className="text-3xl">🥇</span>;
     if (rank === 2) return <span className="text-3xl">🥈</span>;
@@ -62,6 +92,7 @@ export default async function RankingAreaPage({ params }: Props) {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-10">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
       {/* パンくず */}
       <nav className="text-sm text-gray-400 mb-6">
         <Link href="/" className="hover:text-primary">トップ</Link>

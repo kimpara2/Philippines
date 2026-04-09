@@ -111,15 +111,41 @@ const AREA_CATEGORY_SEO_TEXT: Record<string, Record<string, string>> = {
   },
 };
 
+const PAGE_SIZE = 12;
+
+// エリア × カテゴリ別FAQ
+const AREA_FAQS: Record<string, Array<{ q: string; a: string }>> = {
+  浜松: [
+    { q: "浜松のフィリピンパブの料金相場はいくらですか？", a: "浜松のフィリピンパブはシステム料1,000〜3,000円＋ドリンク代が基本で、1時間あたり3,000〜8,000円程度が目安です。お店によって異なるため、各店舗ページの料金情報をご確認ください。" },
+    { q: "浜松のフィリピンパブは初めてでも入れますか？", a: "はい、浜松のほとんどのフィリピンパブは初めての方・一人でのご来店を歓迎しています。事前にお店へ「初めてですが」と一言伝えると安心です。" },
+    { q: "浜松のスナックはどんな雰囲気ですか？", a: "浜松のスナックはアットホームな雰囲気のお店が多く、ママや女性スタッフとカラオケや会話を楽しめます。常連客も多く、初めての方でも入りやすいお店がほとんどです。" },
+    { q: "浜松で夜遊びするならどのエリアがおすすめですか？", a: "浜松駅周辺（浜松駅北口・田町エリア）にフィリピンパブ・スナック・ガールズバーが集中しており、徒歩で複数のお店を回りやすく初めての方にもおすすめです。" },
+  ],
+  名古屋: [
+    { q: "名古屋のフィリピンパブの料金相場は？", a: "名古屋のフィリピンパブはシステム料1,000〜3,000円＋ドリンク代が基本。1時間4,000〜10,000円程度が目安です。" },
+    { q: "名古屋のスナックはどこに多いですか？", a: "名古屋のスナックは栄・錦エリアに多く集まっています。アットホームなお店から高級志向まで幅広い選択肢があります。" },
+    { q: "名古屋のガールズバーはどのエリアが多いですか？", a: "名古屋のガールズバーは栄・錦・大須エリアに多く集まっています。おしゃれなお店から気軽に入れるお店まで揃っています。" },
+  ],
+  静岡市: [
+    { q: "静岡市のフィリピンパブはどこで探せますか？", a: "東海NIGHTの静岡市エリアページで静岡駅周辺のフィリピンパブを一覧で確認できます。" },
+    { q: "静岡市のスナックの特徴は？", a: "静岡市のスナックはアットホームな雰囲気で、ママや女性スタッフとカラオケや会話が楽しめます。" },
+  ],
+  沼津: [
+    { q: "沼津のフィリピンパブはどこで探せますか？", a: "東海NIGHTの沼津エリアページで沼津駅周辺のフィリピンパブを一覧で確認できます。" },
+    { q: "沼津でおすすめの夜遊びスポットは？", a: "沼津ではフィリピンパブ・スナック・ガールズバーが揃っています。東海NIGHTで口コミや評価を参考にお気に入りのお店を見つけてください。" },
+  ],
+};
+
 type Props = {
   params: Promise<{ area: string }>;
-  searchParams: Promise<{ category?: string }>;
+  searchParams: Promise<{ category?: string; page?: string }>;
 };
 
 export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const { area } = await params;
-  const { category } = await searchParams;
+  const { category, page } = await searchParams;
   const decodedArea = decodeURIComponent(area);
+  const currentPage = Math.max(1, parseInt(page ?? "1"));
   const subAreas = PREFECTURE_AREAS[decodedArea];
   const searchAreas = subAreas ? [decodedArea, ...subAreas] : [decodedArea];
 
@@ -133,8 +159,10 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   if (category) countQuery = countQuery.eq("category", category);
   const { count } = await countQuery;
 
+  const totalPages = Math.ceil((count ?? 0) / PAGE_SIZE);
   const genre = category ?? "夜遊びスポット";
-  const title = `${decodedArea}の${genre}一覧${count ? `【${count}件】` : ""}`;
+  const pageLabel = currentPage > 1 ? ` (${currentPage}ページ目)` : "";
+  const title = `${decodedArea}の${genre}一覧${count ? `【${count}件】` : ""}${pageLabel}`;
   const description = category
     ? `${decodedArea}の${category}${count ? `${count}件` : ""}を掲載。営業時間・料金・アクセス情報を東海NIGHTでチェック。`
     : `${decodedArea}のフィリピンパブ・スナック・ガールズバー・バー・キャバクラ${count ? `${count}件` : ""}を掲載。東海NIGHTで${decodedArea}の夜遊び情報を探そう。`;
@@ -143,23 +171,28 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
     ? ["フィリピンパブ 浜松", "浜松 フィリピンパブ", "浜松市 フィリピンパブ", "浜松 スナック", "浜松 ガールズバー", "浜松 夜遊び", "浜松市 夜遊び"]
     : [`フィリピンパブ ${decodedArea}`, `${decodedArea} フィリピンパブ`, `${decodedArea} スナック`, `${decodedArea} 夜遊び`];
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "";
+  const baseUrl = `${siteUrl}/area/${area}${category ? `?category=${encodeURIComponent(category)}` : ""}`;
+  const pageParam = (p: number) => category ? `&page=${p}` : `?page=${p}`;
+
   return {
     title,
     description,
     keywords: areaKeywords,
-    openGraph: {
-      title: `${title} | 東海NIGHT`,
-      description,
-    },
+    openGraph: { title: `${title} | 東海NIGHT`, description },
     alternates: {
-      canonical: `${process.env.NEXT_PUBLIC_SITE_URL ?? ""}/area/${area}${category ? `?category=${encodeURIComponent(category)}` : ""}`,
+      canonical: currentPage === 1 ? baseUrl : `${baseUrl}${pageParam(currentPage)}`,
+      ...(currentPage > 1 ? { prev: currentPage === 2 ? baseUrl : `${baseUrl}${pageParam(currentPage - 1)}` } : {}),
+      ...(currentPage < totalPages ? { next: `${baseUrl}${pageParam(currentPage + 1)}` } : {}),
     },
   };
 }
 
 export default async function AreaPage({ params, searchParams }: Props) {
   const { area } = await params;
-  const { category } = await searchParams;
+  const { category, page } = await searchParams;
+  const currentPage = Math.max(1, parseInt(page ?? "1"));
+  const offset = (currentPage - 1) * PAGE_SIZE;
   const decodedArea = decodeURIComponent(area);
   const supabase = await createClient();
 
@@ -174,6 +207,7 @@ export default async function AreaPage({ params, searchParams }: Props) {
     .eq("role", "admin");
   const adminIdsArea = new Set((adminProfilesArea ?? []).map((p: { id: string }) => p.id));
 
+  // 全件取得してページネーション（管理者優先のソートが必要なため全件取得）
   let storeQuery = supabase
     .from("stores")
     .select("*")
@@ -182,11 +216,13 @@ export default async function AreaPage({ params, searchParams }: Props) {
     .eq("is_approved", true);
   if (category) storeQuery = storeQuery.eq("category", category);
   const { data: storesRaw } = await storeQuery;
-  // 管理者の店舗を先頭に、それ以外はランダム順
   const allAreaStores = (storesRaw as Store[] | null) ?? [];
   const adminAreaStores = allAreaStores.filter((s) => s.owner_id && adminIdsArea.has(s.owner_id));
   const otherAreaStores = allAreaStores.filter((s) => !s.owner_id || !adminIdsArea.has(s.owner_id)).sort(() => Math.random() - 0.5);
-  const stores = [...adminAreaStores, ...otherAreaStores];
+  const allStoresSorted = [...adminAreaStores, ...otherAreaStores];
+  const totalCount = allStoresSorted.length;
+  const totalPages = Math.ceil(totalCount / PAGE_SIZE);
+  const stores = allStoresSorted.slice(offset, offset + PAGE_SIZE);
 
   // キャスト写真・店舗写真を取得
   const storeIds = (stores ?? []).map((s) => s.id);
@@ -362,6 +398,49 @@ export default async function AreaPage({ params, searchParams }: Props) {
         </div>
       )}
 
+      {/* ページネーション */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-2 mt-8">
+          {currentPage > 1 && (
+            <Link
+              href={`/area/${area}${category ? `?category=${encodeURIComponent(category)}&` : "?"}page=${currentPage - 1}`}
+              className="px-4 py-2 rounded-full bg-dark-card border border-dark-border text-gray-300 hover:border-primary hover:text-white text-sm font-bold transition-colors"
+            >← 前へ</Link>
+          )}
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+            <Link
+              key={p}
+              href={`/area/${area}${category ? `?category=${encodeURIComponent(category)}&` : "?"}page=${p}`}
+              className={`w-9 h-9 flex items-center justify-center rounded-full text-sm font-bold transition-colors ${
+                p === currentPage ? "bg-primary text-white" : "bg-dark-card border border-dark-border text-gray-300 hover:border-primary hover:text-white"
+              }`}
+            >{p}</Link>
+          ))}
+          {currentPage < totalPages && (
+            <Link
+              href={`/area/${area}${category ? `?category=${encodeURIComponent(category)}&` : "?"}page=${currentPage + 1}`}
+              className="px-4 py-2 rounded-full bg-dark-card border border-dark-border text-gray-300 hover:border-primary hover:text-white text-sm font-bold transition-colors"
+            >次へ →</Link>
+          )}
+        </div>
+      )}
+
+      {/* 関連カテゴリへのクロスリンク */}
+      <div className="mt-10">
+        <h2 className="text-sm font-bold text-gray-400 mb-3">{decodedArea}の他のカテゴリも見る</h2>
+        <div className="flex flex-wrap gap-2">
+          <Link href={`/area/${area}`} className="px-4 py-2 rounded-full bg-dark-card border border-dark-border text-gray-300 hover:border-primary hover:text-white text-sm font-bold transition-colors">
+            すべて
+          </Link>
+          {CATEGORIES.filter((c) => c !== category).map((c) => (
+            <Link key={c} href={`/area/${area}?category=${encodeURIComponent(c)}`}
+              className="px-4 py-2 rounded-full bg-dark-card border border-dark-border text-gray-300 hover:border-primary hover:text-white text-sm font-bold transition-colors">
+              {decodedArea}の{c}
+            </Link>
+          ))}
+        </div>
+      </div>
+
       {/* おすすめ女子 */}
       {featuredCasts.length > 0 && (
         <div className="mt-10">
@@ -400,6 +479,34 @@ export default async function AreaPage({ params, searchParams }: Props) {
                 <span className="text-primary text-xs shrink-0">→</span>
               </Link>
             ))}
+          </div>
+        </div>
+      )}
+
+      {/* エリア別FAQセクション */}
+      {AREA_FAQS[decodedArea] && (
+        <div className="mt-12">
+          <h2 className="text-lg font-bold text-white mb-4">
+            {decodedArea}{category ? `の${category}` : ""}についてよくある質問
+          </h2>
+          <div className="space-y-3">
+            {AREA_FAQS[decodedArea].map((faq, i) => (
+              <div key={i} className="bg-dark-card border border-dark-border rounded-xl overflow-hidden">
+                <div className="flex items-start gap-3 px-5 py-4">
+                  <span className="text-primary font-black text-lg shrink-0">Q</span>
+                  <p className="text-white font-bold text-sm leading-snug">{faq.q}</p>
+                </div>
+                <div className="flex items-start gap-3 px-5 py-4 bg-dark border-t border-dark-border">
+                  <span className="text-accent font-black text-lg shrink-0">A</span>
+                  <p className="text-gray-300 text-sm leading-relaxed">{faq.a}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 text-center">
+            <Link href="/faq" className="text-primary text-sm hover:underline">
+              その他よくある質問を見る →
+            </Link>
           </div>
         </div>
       )}
